@@ -20,20 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/poster"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_launcher_background" />
-
             <TextView
                 android:id="@+id/tv_title"
-                android:layout_width="59dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="TextView"
                 app:layout_constraintStart_toEndOf="@+id/poster"
@@ -41,15 +32,16 @@
 
             <TextView
                 android:id="@+id/tv_des"
-                android:layout_width="269dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:ellipsize="end"
+                android:layout_width="214dp"
+                android:layout_height="41dp"
+                android:layout_marginTop="4dp"
 
+                android:ellipsize="end"
+                android:maxLength="100"
                 android:maxLines="2"
                 android:text="Some long text of plot of that film  sfdsfdsf sdfsdfsd dsf sdfwe twrwerwe  dfgdf dfdsf cxv fg sdf sdf ew dsfdsf wef"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/tv_title"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
@@ -91,6 +83,15 @@
                 app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                 app:layout_constraintStart_toEndOf="@+id/imageView3"
                 app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                card_view:srcCompat="@tools:sample/backgrounds/scenic" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

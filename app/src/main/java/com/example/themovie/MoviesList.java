@@ -69,7 +69,7 @@ public class MoviesList extends Fragment {
             if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
                 return;
             }
-            ApiService.getApi().getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN).enqueue(new Callback<MovieResponse>() {
+            ApiService.getApi().getPopularMoviesList(BuildConfig.THE_MOVIE_DB_API_TOKEN).enqueue(new Callback<MovieResponse>() {
                 @Override
                 public void onResponse(@NotNull Call<MovieResponse> call, Response<MovieResponse> response) {
                     Log.d("My_post_list", response.body().toString());
@@ -77,7 +77,7 @@ public class MoviesList extends Fragment {
                         adapter.setMoviesList(response.body().getResults());
                         adapter.notifyDataSetChanged();
                     }
-                    swipeRefreshLayout.setRefreshing(false);
+//                    swipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
@@ -90,6 +90,8 @@ public class MoviesList extends Fragment {
 
         } catch (Exception e) {
             Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
+            Log.d("LOL", e.toString());
+
         }
     }
 
