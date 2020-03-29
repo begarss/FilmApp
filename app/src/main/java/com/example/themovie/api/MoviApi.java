@@ -10,6 +10,5 @@ public interface MoviApi {
     @GET("movie/popular")
     Call<MovieResponse> getPopularMoviesList(@Query("api_key") String apiKey);
 
-//    @GET("movie/popular")
-//    fun getPopularMovieList(@Query("api_key") apiKey: String): Call<MovieResponse>
+
 }
