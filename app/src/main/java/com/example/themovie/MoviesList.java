@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,22 +45,27 @@ public class MoviesList extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.page, container, false);
         recyclerView = rootView.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        movies = new ArrayList<Movie>();
         adapter = new MovieAdapter(getActivity(), movies);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         loadJSON();
-//        swipeRefreshLayout.findViewById(R.id.main_content);
-//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                recyclerView = rootView.findViewById(R.id.recycler_view);
-//                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-//                adapter = new MovieAdapter(getActivity(), movies);
-//                adapter.notifyDataSetChanged();
-//                loadJSON();
-//            }
-//        });
+        swipeRefreshLayout = rootView.findViewById(R.id.main_content);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                recyclerView = rootView.findViewById(R.id.recycler_view);
+                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                movies = new ArrayList<Movie>();
+
+                adapter = new MovieAdapter(getActivity(), movies);
+                adapter.notifyDataSetChanged();
+                loadJSON();
+            }
+        });
 
         return rootView;
     }
@@ -77,7 +83,7 @@ public class MoviesList extends Fragment {
                         adapter.setMoviesList(response.body().getResults());
                         adapter.notifyDataSetChanged();
                     }
-//                    swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
