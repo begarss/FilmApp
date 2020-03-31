@@ -43,7 +43,7 @@ public class MoviesList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.page, container, false);
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.movie_recycler, container, false);
         recyclerView = rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
