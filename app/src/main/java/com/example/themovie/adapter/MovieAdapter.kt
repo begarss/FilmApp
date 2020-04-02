@@ -9,13 +9,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.themovie.DetailActivity
+import com.example.themovie.MovieDetails
 import com.example.themovie.R
 import com.example.themovie.model.Movie
-import kotlinx.android.synthetic.main.movie_card.view.*
-import java.security.AccessControlContext
 
- class MovieAdapter(
+class MovieAdapter(
     var context: Context,
     var moviesList: List<Movie>? = null
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
@@ -29,7 +27,13 @@ import java.security.AccessControlContext
 
      override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
          holder.bind(moviesList?.get(position))
-
+//         holder.itemView.setOnClickListener { v ->
+//             val context = v.context
+//             val intent = Intent(context, MovieDetails::class.java)
+//             intent.putExtra(MovieDetails.ARG_ITEM_ID, holder.destination!!.id)
+//
+//             context.startActivity(intent)
+//         }
      }
 
     inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -39,7 +43,7 @@ import java.security.AccessControlContext
             val date = view.findViewById<TextView>(R.id.tv_date)
             val commnetsCount = view.findViewById<TextView>(R.id.tv_comment)
             val poster = view.findViewById<ImageView>(R.id.poster)
-
+            val movie_id=post?.id
             title.text=post?.original_title
             description.text=post?.overview
             date.text=post?.release_date
@@ -47,12 +51,8 @@ import java.security.AccessControlContext
                 .load(post?.getPosterPath())
                 .into(poster)
             view.setOnClickListener {
-                val intent = Intent(context, DetailActivity::class.java)
-                intent.putExtra("original_title", post?.original_title)
-                intent.putExtra("poster_path", post?.poster_path)
-                intent.putExtra("overview", post?.overview)
-                intent.putExtra("vote_average", (post?.vote_average).toString())
-                intent.putExtra("relase_date", post?.release_date)
+                val intent = Intent(context, MovieDetails::class.java)
+                intent.putExtra("movieId",movie_id)
                 context.startActivity(intent)
             }
         }

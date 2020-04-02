@@ -1,5 +1,7 @@
 package com.example.themovie.api;
 
+import com.example.themovie.model.Movie;
+import com.example.themovie.model.MovieDetailResponse;
 import com.example.themovie.model.MovieResponse;
 import com.example.themovie.session.LoginData;
 import com.example.themovie.session.RequestToken;
@@ -12,6 +14,7 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface MoviApi {
@@ -26,4 +29,7 @@ public interface MoviApi {
 
     @GET("authentication/token/new")
     Call<RequestToken> getRequestToken(@Query("api_key") String apiKey);
+
+    @GET("movie/{movie_id}")
+    Call<MovieDetailResponse> getMovieDetail(@Path ("movie_id") int id, @Query("api_key") String apiKey);
 }

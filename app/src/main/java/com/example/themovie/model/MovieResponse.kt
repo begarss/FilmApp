@@ -11,4 +11,5 @@ data class MovieResponse(
     val total_pages: Int,
     @SerializedName("results")
     val results: List<Movie>
+
 )
