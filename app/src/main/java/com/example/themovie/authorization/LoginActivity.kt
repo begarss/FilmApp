@@ -1,4 +1,4 @@
-package com.example.themovie.session
+package com.example.themovie.authorization
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,7 +12,6 @@ import com.example.themovie.MainActivity
 import com.example.themovie.R
 import com.example.themovie.api.ApiService
 import kotlinx.android.synthetic.main.login_activity.*
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

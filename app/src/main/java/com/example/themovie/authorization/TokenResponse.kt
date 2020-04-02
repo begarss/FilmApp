@@ -1,4 +1,4 @@
-package com.example.themovie.session
+package com.example.themovie.authorization
 
 import com.google.gson.annotations.SerializedName
 

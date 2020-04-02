@@ -12,14 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.themovie.adapter.MovieAdapter;
 import com.example.themovie.api.ApiService;
-import com.example.themovie.api.MoviApi;
-import com.example.themovie.api.PostApi;
+import com.example.themovie.api.MovieApi;
 import com.example.themovie.model.Movie;
 import com.example.themovie.model.MovieResponse;
 
@@ -30,15 +28,13 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MoviesList extends Fragment {
+public class MoviesListFragment extends Fragment {
     RecyclerView recyclerView;
     ArrayList<Movie> movies;
     MovieAdapter adapter;
     SwipeRefreshLayout swipeRefreshLayout;
-    private MoviApi postApi;
+    private MovieApi postApi;
 
     @Nullable
     @Override

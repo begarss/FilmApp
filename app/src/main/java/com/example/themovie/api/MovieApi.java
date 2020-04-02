@@ -1,23 +1,18 @@
 package com.example.themovie.api;
 
-import com.example.themovie.model.Movie;
 import com.example.themovie.model.MovieDetailResponse;
 import com.example.themovie.model.MovieResponse;
-import com.example.themovie.session.LoginData;
-import com.example.themovie.session.RequestToken;
-import com.google.gson.JsonObject;
+import com.example.themovie.authorization.LoginData;
+import com.example.themovie.authorization.RequestToken;
 
-import kotlinx.coroutines.Deferred;
-import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface MoviApi {
+public interface MovieApi {
     @GET("movie/popular")
     Call<MovieResponse> getPopularMoviesList(@Query("api_key") String apiKey);
 
