@@ -10,7 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.themovie.BuildConfig
 import com.example.themovie.MainActivity
 import com.example.themovie.R
-import com.example.themovie.api.ApiService
+import com.example.themovie.api.MovieApi
+import com.example.themovie.api.RetrofitService
 import kotlinx.android.synthetic.main.login_activity.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,7 +45,8 @@ class LoginActivity : AppCompatActivity() {
             if(BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()){
                 return
             }
-            ApiService.getApi().getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN).enqueue(object : Callback<RequestToken>{
+            val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
+            api?.getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)?.enqueue(object : Callback<RequestToken>{
                 override fun onFailure(call: Call<RequestToken>, t: Throwable) {
                     Toast.makeText(this@LoginActivity,"Error api ket", Toast.LENGTH_LONG)
                 }
@@ -72,8 +74,9 @@ class LoginActivity : AppCompatActivity() {
             if(BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()){
                 return
             }
-           ApiService.getApi().login(LoginData(email.text.toString(),tv_psw.text.toString(),requestedToken))
-               .enqueue(object : Callback<RequestToken>{
+            val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
+            api?.login(LoginData(email.text.toString(),tv_psw.text.toString(),requestedToken))
+               ?.enqueue(object : Callback<RequestToken>{
                    override fun onFailure(call: Call<RequestToken>, t: Throwable) {
                        Toast.makeText(this@LoginActivity, "Incorrect data", Toast.LENGTH_SHORT).show()
 
