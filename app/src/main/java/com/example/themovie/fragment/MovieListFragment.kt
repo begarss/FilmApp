@@ -57,7 +57,7 @@ class MovieListFragment:Fragment(){
      private fun getMovieList(){
          swipeRefreshLayout.isRefreshing = true
          val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-         api?.getPopularMoviesList(API_KEY)?.enqueue(object : Callback<MovieResponse> {
+         api?.getPopularMoviesList(API_KEY,1)?.enqueue(object : Callback<MovieResponse> {
              override fun onResponse(
                  call: Call<MovieResponse>,
                  response: Response<MovieResponse>
