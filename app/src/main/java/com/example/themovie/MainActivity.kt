@@ -9,6 +9,7 @@ import com.example.themovie.adapter.SlidePagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
+    //check for branch commit
     lateinit var pager: ViewPager;
     lateinit var pagerAdapter: PagerAdapter
     val f1: Fragment = MoviesListFragment();
@@ -44,8 +45,6 @@ class MainActivity : AppCompatActivity() {
             }//bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(false);
             false
         }
-
-
     }
 
 

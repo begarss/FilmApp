@@ -14,7 +14,7 @@ data class MovieDetailResponse(
     val overview: String,
     val popularity: Double,
     val poster_path: Any,
-    val production_companies: List<ProductionCompany>,
+//    val production_companies: List<ProductionCompany>,
     val release_date: String,
     val revenue: Int,
     val runtime: Int,
