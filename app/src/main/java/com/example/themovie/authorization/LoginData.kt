@@ -12,4 +12,5 @@ class LoginData(username:String, password:String, token: String?){
         request_token=token!!
         
     }
+
 }

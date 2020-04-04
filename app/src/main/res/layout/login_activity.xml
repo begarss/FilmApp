@@ -52,7 +52,8 @@
             android:layout_marginEnd="23dp"
             android:ems="10"
             android:hint="Email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:text="begarss" />
 
         <EditText
             android:id="@+id/tv_psw"
@@ -65,7 +66,8 @@
             android:layout_marginEnd="23dp"
             android:ems="10"
             android:hint="Пароль"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:text="newparol" />
 
         <TextView
             android:layout_width="wrap_content"

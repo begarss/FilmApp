@@ -8,6 +8,7 @@ object RetrofitService {
 
     const val BASE_URL = "http://api.themoviedb.org/3/"
     private var retrofit: Retrofit? = null
+    private var movieApi: MovieApi? = null
 
     fun getClient(): Retrofit? {
         if (retrofit == null) {
@@ -17,6 +18,10 @@ object RetrofitService {
                 .build()
         }
         return retrofit
+    }
+    fun getApi(): MovieApi? {
+        movieApi= getClient()?.create(MovieApi::class.java)
+        return movieApi
     }
 }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.themovie.fragment.FavouritesFragment
 import com.example.themovie.fragment.MovieListFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -26,6 +27,10 @@ class MainActivity : AppCompatActivity() {
                     fm?.beginTransaction()
                         ?.replace(R.id.fragment_container, fragment!!)
                         ?.commit()
+                }
+                R.id.nav_fav ->{
+                    fragment = FavouritesFragment()
+                    fm?.beginTransaction()?.replace(R.id.fragment_container,fragment!!)?.commit()
                 }
             }
             false
