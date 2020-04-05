@@ -51,7 +51,6 @@
                             android:orientation="vertical"
                             android:background="@drawable/movie_horizontal"
                             android:gravity="bottom">
-
                                 <TextView
                                     android:id="@+id/m_movie_title"
                                     android:layout_width="wrap_content"

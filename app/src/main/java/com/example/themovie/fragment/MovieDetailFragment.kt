@@ -17,17 +17,19 @@ import com.example.themovie.Fav.FavResponse
 import com.example.themovie.R
 import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService
-import com.example.themovie.model.MovieDetailResponse
+import com.example.themovie.model.Movie
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MovieDetailFragment : Fragment() {
-    private val API_KEY = "50433cbb6c47b22aabd51bf88ddd11c0"
     private var movieTitle: TextView? = null
     private var movieJanre: TextView? = null
     private var movieDate: TextView? = null
+    private var movieYear: TextView? = null
     private var movieDescription: TextView? = null
     private var movie_id:Int?=null
     private var poster: ImageView? = null
@@ -42,10 +44,12 @@ class MovieDetailFragment : Fragment() {
             .inflate(R.layout.fragment_movie_detail, container, false)
         movieTitle = v.findViewById(R.id.m_movie_title)
         movieJanre = v.findViewById(R.id.m_movie_genre)
-        movieDate = v.findViewById(R.id.m_movie_date)
+        movieDate = v.findViewById(R.id.m_movie_date_detail)
         movieDescription = v.findViewById(R.id.m_movie_overview)
         poster = v.findViewById(R.id.m_avatar_detail)
         likeBtn = v.findViewById(R.id.fav_btn)
+        movieYear = v.findViewById(R.id.m_movie_release_date)
+
         val pref =
             activity!!.getSharedPreferences("tkn",Context.MODE_PRIVATE)
         sessionId = pref.getString("sessionID", "empty")
@@ -53,26 +57,32 @@ class MovieDetailFragment : Fragment() {
     }
 
     fun getMovieDetail(id: Int) {
+        val dateFormat = SimpleDateFormat("MMMM d, YYYY H:m", Locale.ENGLISH)
+        val dateYearFormat = SimpleDateFormat("YYYY", Locale.ENGLISH)
+        val initialFormat = SimpleDateFormat("YY-MM-DD", Locale.ENGLISH)
         val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
         api?.getMovieDetail(id, BuildConfig.THE_MOVIE_DB_API_TOKEN)
-            ?.enqueue(object : Callback<MovieDetailResponse> {
+            ?.enqueue(object : Callback<Movie> {
                 override fun onResponse(
-                    call: Call<MovieDetailResponse>,
-                    response: Response<MovieDetailResponse>
+                    call: Call<Movie>,
+                    response: Response<Movie>
                 ) {
-                    movieTitle?.setText(response.body()?.title)
+                    val dateTime = initialFormat.parse(response.body()?.release_date)
+                    movieDate?.setText(dateFormat.format(dateTime))
+                    movieYear?.setText(dateYearFormat.format(dateTime))
+                    movieTitle?.setText(response.body()?.original_title)
                     movieDescription?.setText(response.body()?.overview)
                     movieJanre?.setText((response.body()?.genres?.first()?.name))
                     Glide.with(view?.context!!)
-                        .load(response?.body()?.getPosterPath())
-                        .into(this@MovieDetailFragment!!.poster!!)
+                        .load(response.body()?.getPosterPath())
+                        .into(this@MovieDetailFragment.poster!!)
                     movie_id=response.body()?.id
                     likeBtn?.setOnClickListener(View.OnClickListener {
                         markAsFav(FavMovieInfo(true,movie_id,"movie"), sessionId )
                     })
                 }
 
-                override fun onFailure(call: Call<MovieDetailResponse>, t: Throwable) {}
+                override fun onFailure(call: Call<Movie>, t: Throwable) {}
             })
     }
 
