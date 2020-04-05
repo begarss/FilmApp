@@ -5,15 +5,11 @@
         android:id="@+id/nav_home"
         android:title="Лента"
         android:checked="false"
-        android:icon="@drawable/ic_home_black_24dp"
-        />
+        android:icon="@drawable/ic_home_black_24dp" />
     <item android:id="@+id/nav_book"
         android:title="Категории"
         android:checked="false"
-
         android:icon="@drawable/ic_category"/>
-
-
     <item android:id="@+id/nav_fav"
         android:title="Закладки"
         android:icon="@drawable/ic_favorite_black_24dp"
@@ -22,5 +18,4 @@
         android:title="Профиль"
         android:icon="@drawable/ic_account"
         android:checked="false"/>
-
 </menu>
