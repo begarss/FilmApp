@@ -69,15 +69,15 @@ class FavouritesFragment : Fragment() {
         api?.getFavList( sessionId)
             ?.enqueue(object : Callback<MovieResponse>{
                 override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                    Log.d("Fav","failure occured")
+                    Log.d("FavouritesFragment","OnFailure")
                 }
 
                 override fun onResponse(
                     call: Call<MovieResponse>,
                     response: Response<MovieResponse>
                 ) {
-                    Log.d("Fav", response.toString())
-                    Log.d("Fav", sessionId)
+                    Log.d("FavouritesFragment", response.toString())
+                    Log.d("FavouritesFragment", sessionId)
                     if (response.isSuccessful()) {
                         val movies= response.body()
                         movieListAdapter?.moviesList = movies?.results
