@@ -7,12 +7,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
+import com.example.themovie.BuildConfig
+import com.example.themovie.MainActivity
 import com.example.themovie.R
 import com.example.themovie.adapter.MovieListAdapter
 import com.example.themovie.api.MovieApi
@@ -32,10 +38,20 @@ class MovieListFragment:Fragment(){
     private var movieListAdapter: MovieListAdapter? = null
     private var movies: ArrayList<Movie>? = null
     lateinit var preferences: SharedPreferences
+    private var bigIm:ImageView?=null
+    private var bigTitle:TextView?=null
+    private var bigDate:TextView?=null
+    lateinit var movie: Movie
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view: View = LayoutInflater.from(container?.context).inflate(R.layout.fragment_movie_list, container, false)
+       bigIm=view.findViewById(R.id.first_im)
+        bigIm?.visibility=View.INVISIBLE
+        bigTitle=view.findViewById(R.id.fm_movie_title)
+        bigTitle?.visibility=View.INVISIBLE
+        bigDate=view.findViewById(R.id.fm_movie_date)
+        bigDate?.visibility=View.INVISIBLE
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -51,6 +67,7 @@ class MovieListFragment:Fragment(){
             recyclerView.layoutManager = GridLayoutManager(activity, 1)
             recyclerView.itemAnimator = DefaultItemAnimator()
             movies = ArrayList<Movie>()
+            bigIm?.visibility=View.INVISIBLE
 
             movieListAdapter = MovieListAdapter(movies)
             movieListAdapter?.notifyDataSetChanged()
@@ -59,6 +76,7 @@ class MovieListFragment:Fragment(){
 
         return view
     }
+
      private fun getMovieList(){
          swipeRefreshLayout.isRefreshing = true
          val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
@@ -69,8 +87,28 @@ class MovieListFragment:Fragment(){
              ) {
                  if (response.isSuccessful()) {
                      val movies= response.body()
-                     movieListAdapter?.moviesList = movies?.results
+                     //movieListAdapter?.moviesList = movies?.results
+                     val list = response.body()?.results
+                     val list2=list!!.subList(1,list.lastIndex)
+                     movie = list.first()
+                     bigDate?.text=movie.release_date
+                     bigTitle?.text=movie.original_title
+                     bigIm?.visibility=View.VISIBLE
+                     bigTitle?.visibility=View.VISIBLE
+                     bigDate?.visibility=View.VISIBLE
+                     Glide.with(this@MovieListFragment)
+                         .load(movie.getPosterPath())
+                         .into(this@MovieListFragment.bigIm!!)
+                     movieListAdapter?.moviesList=list2
                      movieListAdapter?.notifyDataSetChanged()
+                     bigIm?.setOnClickListener {
+                         if (view?.context is MainActivity) {
+                             val movieDetailFragment = MovieDetailFragment()
+                             (view?.context as MainActivity).fm?.beginTransaction()?.replace(R.id.fragment_container,movieDetailFragment)?.addToBackStack(null)?.commit()
+                             movieDetailFragment.getMovieDetail(movie?.id)
+                         }
+
+                     }
 
                  }
                  swipeRefreshLayout.isRefreshing = false

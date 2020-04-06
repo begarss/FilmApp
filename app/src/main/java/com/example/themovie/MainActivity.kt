@@ -1,6 +1,7 @@
 package com.example.themovie
 
 import android.os.Bundle
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -9,6 +10,7 @@ import com.example.themovie.fragment.MovieListFragment
 import com.example.themovie.fragment.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+
 class MainActivity : AppCompatActivity() {
     var fm: FragmentManager? = null
     var fragment: Fragment? = null
@@ -16,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val window: Window = this.getWindow()
 
         fm = supportFragmentManager
         fragment = fm?.findFragmentById(R.id.fragment_container)
