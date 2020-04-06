@@ -1,9 +1,10 @@
-package com.example.themovie
+package com.example.themovie.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.themovie.R
 import com.example.themovie.fragment.FavouritesFragment
 import com.example.themovie.fragment.MovieListFragment
 import com.example.themovie.fragment.UserFragment
@@ -45,7 +46,8 @@ class MainActivity : AppCompatActivity() {
             false
         }
         if (savedInstanceState == null) {
-            bottomNavigationView.selectedItemId = R.id.nav_home
+            bottomNavigationView.selectedItemId =
+                R.id.nav_home
         }
     }
 
