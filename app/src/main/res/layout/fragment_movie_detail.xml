@@ -28,7 +28,7 @@
         android:scaleType="centerCrop"
         android:fitsSystemWindows="true"
         app:layout_collapseMode="parallax"
-        android:src="@drawable/movie_horizontal" />
+        />
             <ImageButton
                 android:id="@+id/back_btn"
                 android:layout_width="wrap_content"
@@ -54,12 +54,12 @@
             android:id="@+id/fav_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="16dp"
             android:layout_gravity="right"
             android:layout_marginHorizontal="64dp"
+            android:layout_marginVertical="16dp"
             android:background="@android:color/transparent"
             android:contentDescription="TODO"
-            android:src="@drawable/ic_favorite_black_24dp"
+            android:src="@drawable/ic_favorite_border_black_24dp"
             android:tint="@android:color/white" />
     </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

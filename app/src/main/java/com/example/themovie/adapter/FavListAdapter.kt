@@ -40,6 +40,7 @@ class FavListAdapter(
             val commentsCount = view.findViewById<TextView>(R.id.m_movie_cnt)
             val poster = view.findViewById<ImageView>(R.id.m_movie_poster)
             val movie_id=movie?.id
+            val likeBtn=view.findViewById<ImageView>(R.id.fav_btn)
             title.text=movie?.original_title
             commentsCount.text= movie?.vote_count.toString()
             description.text=movie?.overview
@@ -48,6 +49,8 @@ class FavListAdapter(
             Glide.with(view.context)
                 .load(movie?.getPosterPath())
                 .into(poster)
+
+
             view.setOnClickListener {
                 if (view.context is MainActivity) {
                     val movieDetailFragment = MovieDetailFragment()

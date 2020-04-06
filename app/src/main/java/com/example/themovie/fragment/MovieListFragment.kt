@@ -1,5 +1,7 @@
 package com.example.themovie.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,6 +31,7 @@ class MovieListFragment:Fragment(){
     private val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
     private var movieListAdapter: MovieListAdapter? = null
     private var movies: ArrayList<Movie>? = null
+    lateinit var preferences: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -41,6 +44,8 @@ class MovieListFragment:Fragment(){
         recyclerView.adapter = movieListAdapter
         movieListAdapter?.notifyDataSetChanged()
         swipeRefreshLayout = view.findViewById(R.id.main_content)
+        preferences =
+            activity!!.getSharedPreferences("tkn", Context.MODE_PRIVATE)
         getMovieList()
         swipeRefreshLayout.setOnRefreshListener {
             recyclerView.layoutManager = GridLayoutManager(activity, 1)
@@ -66,6 +71,7 @@ class MovieListFragment:Fragment(){
                      val movies= response.body()
                      movieListAdapter?.moviesList = movies?.results
                      movieListAdapter?.notifyDataSetChanged()
+
                  }
                  swipeRefreshLayout.isRefreshing = false
              }

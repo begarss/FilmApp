@@ -20,17 +20,17 @@ class MovieListAdapter(
     var moviesList: List<Movie>? = null
 ) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
 
-     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
-         val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_list_row, p0, false)
-         return MovieViewHolder(view)
-     }
-     override fun getItemCount(): Int {
-         return moviesList?.size ?:0
-     }
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
+        val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_list_row, p0, false)
+        return MovieViewHolder(view)
+    }
+    override fun getItemCount(): Int {
+        return moviesList?.size ?:0
+    }
 
-     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-         holder.bind(moviesList?.get(position))
-     }
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        holder.bind(moviesList?.get(position))
+    }
 
     inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         var dateFormat = SimpleDateFormat("MMMM d, YYYY", Locale.ENGLISH)

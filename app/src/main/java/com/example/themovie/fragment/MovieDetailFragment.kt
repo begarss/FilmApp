@@ -31,10 +31,11 @@ class MovieDetailFragment : Fragment() {
     private var movieDate: TextView? = null
     private var movieYear: TextView? = null
     private var movieDescription: TextView? = null
-    private var movie_id:Int?=null
+    private var movie_id: Int? = null
     private var poster: ImageView? = null
     private var likeBtn: ImageView? = null
-    var sessionId: String ?=null
+    private var isLiked: Boolean? = null
+    var sessionId: String? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,7 +52,7 @@ class MovieDetailFragment : Fragment() {
         movieYear = v.findViewById(R.id.m_movie_release_date)
 
         val pref =
-            activity!!.getSharedPreferences("tkn",Context.MODE_PRIVATE)
+            activity!!.getSharedPreferences("tkn", Context.MODE_PRIVATE)
         sessionId = pref.getString("sessionID", "empty")
         return v
     }
@@ -76,9 +77,25 @@ class MovieDetailFragment : Fragment() {
                     Glide.with(view?.context!!)
                         .load(response.body()?.getPosterPath())
                         .into(this@MovieDetailFragment.poster!!)
-                    movie_id=response.body()?.id
+                    movie_id = response.body()?.id
+                    isLiked=getState(movie_id)
+
+
                     likeBtn?.setOnClickListener(View.OnClickListener {
-                        markAsFav(FavMovieInfo(true,movie_id,"movie"), sessionId )
+                        if (isLiked == false) {
+                            isLiked=true
+                            likeBtn?.setImageResource(R.drawable.ic_favorite_black_24dp)
+
+                            markAsFav(FavMovieInfo(true, movie_id, "movie"), sessionId)
+                            likeBtn?.refreshDrawableState()
+                        }else{
+                            isLiked=false
+                            likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+
+                            markAsFav(FavMovieInfo(false,movie_id,"movie"),sessionId)
+                            likeBtn?.refreshDrawableState()
+
+                        }
                     })
                 }
 
@@ -87,9 +104,8 @@ class MovieDetailFragment : Fragment() {
     }
 
 
-
     fun markAsFav(info: FavMovieInfo, sessionId: String?) {
-        Log.d("pusk","mfav" + sessionId)
+        Log.d("pusk", "mfav" + sessionId)
         try {
             if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
                 return
@@ -107,17 +123,52 @@ class MovieDetailFragment : Fragment() {
                     ) {
                         Log.d("pusk", response.toString())
                         Log.d("pusk", response.body().toString())
-                        if (response.body()?.status_code==12)
-                            Toast.makeText(activity,"Film added to favList",Toast.LENGTH_LONG).show()
+                        if (response.body()?.status_code == 12)
+                            Toast.makeText(
+                                activity,
+                                "Film added to favList",
+                                Toast.LENGTH_LONG
+                            ).show()
                     }
 
                 })
         } catch (e: Exception) {
             Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
-            Log.d("mark",e.toString())
+            Log.d("mark", e.toString())
         }
     }
+    fun getState(movieId: Int?) : Boolean? {
+        Log.d("pusk", "state " + movieId)
+        try {
 
+            RetrofitService.getApi()
+                ?.getMovieState(movieId!!,BuildConfig.THE_MOVIE_DB_API_TOKEN,sessionId)
+                ?.enqueue(object : Callback<Movie> {
+                    override fun onFailure(call: Call<Movie>, t: Throwable) {
+                        Log.d("fav", "lol")
+                    }
+
+                    override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
+                        Log.d("pusk", response.toString())
+                        Log.d("pusk", response.body().toString())
+                        if (response.body()?.id==movie_id)
+                            isLiked=response.body()?.favorite
+                        if(isLiked==true){
+                            likeBtn?.setImageResource(R.drawable.ic_favorite_black_24dp)
+
+                        }else
+                            likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+
+                    }
+
+                })
+            return isLiked
+        } catch (e: Exception) {
+            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
+            Log.d("mark", e.toString())
+        }
+        return isLiked
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         // TODO: Use the ViewModel

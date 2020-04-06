@@ -18,8 +18,14 @@ data class Movie(
     @SerializedName("release_date")
     val release_date: String?=null,
     @SerializedName("genres")
-    val genres: List<Genre>?=null
-) {
+    val genres: List<Genre>?=null,
+
+    val favorite: Boolean?=null
+
+)
+
+
+{
     fun getPosterPath(): String {
         return "https://image.tmdb.org/t/p/w500" + poster_path
     }

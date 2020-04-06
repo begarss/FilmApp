@@ -28,18 +28,24 @@ class MainActivity : AppCompatActivity() {
                     fm?.beginTransaction()
                         ?.replace(R.id.fragment_container, fragment!!)
                         ?.commit()
+                    bottomNavigationView.menu.findItem(R.id.nav_home).isChecked = true
+
                 }
                 R.id.nav_fav ->{
                     fragment = FavouritesFragment()
                     fm?.beginTransaction()
                         ?.replace(R.id.fragment_container,fragment!!)
                         ?.commit()
+                    bottomNavigationView.menu.findItem(R.id.nav_fav).isChecked = true
+
                 }
                 R.id.nav_profile -> {
                     fragment = UserFragment()
                     fm?.beginTransaction()
                         ?.replace(R.id.fragment_container, fragment!!)
                         ?.commit()
+                    bottomNavigationView.menu.findItem(R.id.nav_profile).isChecked = true
+
                 }
             }
             false

@@ -35,6 +35,8 @@ public interface MovieApi {
 
     @GET("movie/{movie_id}")
     Call<Movie> getMovieDetail(@Path ("movie_id") int id, @Query("api_key") String apiKey);
+    @GET("movie/{movie_id}/account_states")
+    Call<Movie> getMovieState(@Path ("movie_id") int id, @Query("api_key") String apiKey,@Query("session_id") String session);
 
     @Headers("Content-Type:application/json; charset=UTF-8")
     @POST("account/9178480/favorite?api_key=2f0d69a585b1ec8a833e56046239144b")
