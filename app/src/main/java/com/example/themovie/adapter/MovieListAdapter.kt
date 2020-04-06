@@ -61,4 +61,8 @@ class MovieListAdapter(
         }
 
     }
+    fun clearAll() {
+        (moviesList as? ArrayList<Movie>)?.clear()
+        notifyDataSetChanged()
+    }
 }
