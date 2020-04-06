@@ -3,7 +3,6 @@ package com.example.themovie.model
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.util.*
 import java.util.Collections.emptyList
 
 

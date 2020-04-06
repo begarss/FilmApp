@@ -6,10 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.themovie.R
 import com.example.themovie.adapter.MovieListAdapter
@@ -46,7 +47,7 @@ class MovieListFragment:Fragment(),CoroutineScope {
         val view: View = LayoutInflater.from(container?.context)
             .inflate(R.layout.fragment_movie_list, container, false)
 
-        movieDao = MovieDatabase.getDatabase(context = view.context).movieDao()
+        movieDao = MovieDatabase.getDatabase(view.context).movieDao()
 
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -69,6 +70,8 @@ class MovieListFragment:Fragment(),CoroutineScope {
         movieListAdapter = MovieListAdapter(moviesList)
         recyclerView.adapter = movieListAdapter
         getMovieCoroutine()
+
+
         return view
     }
 
@@ -79,7 +82,7 @@ class MovieListFragment:Fragment(),CoroutineScope {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
                 if (response.isSuccessful()) {
                     val movies = response.body()
-                    moviesList = movies?.results
+                    movieListAdapter?.moviesList = movies?.results
                     movieListAdapter?.notifyDataSetChanged()
                 }
                 swipeRefreshLayout.isRefreshing = false
@@ -96,25 +99,23 @@ class MovieListFragment:Fragment(),CoroutineScope {
     }
 
     private fun getMovieCoroutine() {
-        Log.e(MovieListFragment::class.java.simpleName, "coroutines")
         launch {
             swipeRefreshLayout.isRefreshing = true
-            Log.e(MovieListFragment::class.java.simpleName, "coroutines launch")
             val list = withContext(Dispatchers.IO) {
                 try {
                     val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-                    val response = api?.getPopularMoviesListCoroutine()
+                    val response = api?.getPopularMoviesListCoroutine(API_KEY, 1)
                     if (response!!.isSuccessful) {
-                        Log.d("List", "on success")
                         val result = response.body()
-                        if (!result.isNullOrEmpty()) {
-                            movieDao?.insertAll(result)
+                        if (result?.results.isNullOrEmpty()) {
+                            movieDao?.insertAll(result!!.results)
                         }
-                        result
+                        result!!.results
                     } else {
-                        movieDao?.getAll() ?: emptyList()
+                        movieDao?.getAll() ?: emptyList<Movie>()
                     }
                 } catch (e: Exception) {
+                    Log.e("Moviedatabase",e.toString())
                     movieDao?.getAll() ?: emptyList<Movie>()
                 }
             }
@@ -123,5 +124,7 @@ class MovieListFragment:Fragment(),CoroutineScope {
             swipeRefreshLayout.isRefreshing = false
         }
     }
+
+
 }
 

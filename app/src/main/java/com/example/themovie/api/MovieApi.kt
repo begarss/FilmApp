@@ -40,5 +40,5 @@ import retrofit2.http.*
      fun getFavList(@Query("session_id") session: String?): Call<MovieResponse>
 
      @GET("movie/popular")
-     suspend fun getPopularMoviesListCoroutine(): Response<List<Movie>>
+     suspend fun getPopularMoviesListCoroutine(@Query("api_key") apiKey: String, @Query("page") page: Int): Response<MovieResponse>
 }
