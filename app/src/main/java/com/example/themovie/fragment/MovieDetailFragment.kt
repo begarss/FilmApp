@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -34,7 +35,18 @@ class MovieDetailFragment : Fragment() {
     private var movie_id:Int?=null
     private var poster: ImageView? = null
     private var likeBtn: ImageView? = null
+    private var backBtn: ImageButton? = null
     var sessionId: String ?=null
+    private var movie:Movie? = null
+
+    companion object{
+        fun newInstance(movie: Movie?): MovieDetailFragment? {
+            val fragment = MovieDetailFragment()
+            fragment.movie = movie
+            return fragment
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,7 +61,11 @@ class MovieDetailFragment : Fragment() {
         poster = v.findViewById(R.id.m_avatar_detail)
         likeBtn = v.findViewById(R.id.fav_btn)
         movieYear = v.findViewById(R.id.m_movie_release_date)
+        backBtn = v.findViewById(R.id.back_btn)
 
+        backBtn?.setOnClickListener {
+            activity?.supportFragmentManager?.popBackStack()
+        }
         val pref =
             activity!!.getSharedPreferences("tkn",Context.MODE_PRIVATE)
         sessionId = pref.getString("sessionID", "empty")
@@ -67,16 +83,17 @@ class MovieDetailFragment : Fragment() {
                     call: Call<Movie>,
                     response: Response<Movie>
                 ) {
-                    val dateTime = initialFormat.parse(response.body()?.release_date)
+                    movie = response.body()
+                    val dateTime = initialFormat.parse(movie?.release_date)
                     movieDate?.setText(dateFormat.format(dateTime))
                     movieYear?.setText(dateYearFormat.format(dateTime))
-                    movieTitle?.setText(response.body()?.original_title)
-                    movieDescription?.setText(response.body()?.overview)
-                    movieJanre?.setText((response.body()?.genres?.first()?.name))
+                    movieTitle?.setText(movie?.original_title)
+                    movieDescription?.setText(movie?.overview)
+                    movieJanre?.setText((movie?.genres?.first()?.name))
                     Glide.with(view?.context!!)
-                        .load(response.body()?.getPosterPath())
+                        .load(movie?.getPosterPath())
                         .into(this@MovieDetailFragment.poster!!)
-                    movie_id=response.body()?.id
+                    movie_id=movie?.id
                     likeBtn?.setOnClickListener(View.OnClickListener {
                         markAsFav(FavMovieInfo(true,movie_id,"movie"), sessionId )
                     })

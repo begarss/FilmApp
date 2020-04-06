@@ -52,9 +52,9 @@ class MovieListAdapter(
                 .into(poster)
             view.setOnClickListener {
                 if (view.context is MainActivity) {
-                    val movieDetailFragment = MovieDetailFragment()
-                    (view.context as MainActivity).fm?.beginTransaction()?.replace(R.id.fragment_container,movieDetailFragment)?.addToBackStack(null)?.commit()
-                    movieDetailFragment.getMovieDetail(movie!!.id)
+                    val movieDetailFragment = MovieDetailFragment.newInstance(movie)
+                    (view.context as MainActivity).fm?.beginTransaction()?.replace(R.id.fragment_container,movieDetailFragment!!)?.addToBackStack(null)?.commit()
+                    movieDetailFragment?.getMovieDetail(movie!!.id)
                 }
 
             }
