@@ -24,8 +24,9 @@ class MovieListAdapter(
         val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_list_row, p0, false)
         return MovieViewHolder(view)
     }
+
     override fun getItemCount(): Int {
-        return moviesList?.size ?:0
+        return moviesList?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
@@ -36,24 +37,26 @@ class MovieListAdapter(
         var dateFormat = SimpleDateFormat("MMMM d, YYYY", Locale.ENGLISH)
         var initialFormat = SimpleDateFormat("YY-MM-DD", Locale.ENGLISH)
         fun bind(movie: Movie?) {
-            val  title = view.findViewById<TextView>(R.id.m_movie_title)
+            val title = view.findViewById<TextView>(R.id.m_movie_title)
             val description = view.findViewById<TextView>(R.id.m_movie_overview)
             val date = view.findViewById<TextView>(R.id.m_movie_date)
             val commentsCount = view.findViewById<TextView>(R.id.m_movie_cnt)
             val poster = view.findViewById<ImageView>(R.id.m_movie_poster)
-            val movie_id=movie?.id
-            title.text=movie?.original_title
-            commentsCount.text= movie?.vote_count.toString()
-            description.text=movie?.overview
+            val movie_id = movie?.id
+            title.text = movie?.original_title
+            commentsCount.text = movie?.vote_count.toString()
+            description.text = movie?.overview
             val dateTime = initialFormat.parse(movie?.release_date)
-            date.text=dateFormat.format(dateTime)
+            date.text = dateFormat.format(dateTime)
             Glide.with(view.context)
                 .load(movie?.getPosterPath())
                 .into(poster)
             view.setOnClickListener {
                 if (view.context is MainActivity) {
                     val movieDetailFragment = MovieDetailFragment()
-                    (view.context as MainActivity).fm?.beginTransaction()?.replace(R.id.fragment_container,movieDetailFragment)?.addToBackStack(null)?.commit()
+                    (view.context as MainActivity).fm?.beginTransaction()
+                        ?.replace(R.id.fragment_container, movieDetailFragment)
+                        ?.addToBackStack(null)?.commit()
                     movieDetailFragment.getMovieDetail(movie!!.id)
                 }
 

@@ -19,7 +19,7 @@ import retrofit2.http.Query;
 
 public interface MovieApi {
     @GET("movie/popular")
-    Call<MovieResponse> getPopularMoviesList(@Query("api_key") String apiKey,@Query("page") int page);
+    Call<MovieResponse> getPopularMoviesList(@Query("api_key") String apiKey, @Query("page") int page);
 
 //    @POST("authentication/token/validate_with_login")
 //    Call<RequestBody> getRequestBody(@Query("api_key") String apiKey);
@@ -34,14 +34,15 @@ public interface MovieApi {
     Call<RequestToken> getRequestToken(@Query("api_key") String apiKey);
 
     @GET("movie/{movie_id}")
-    Call<Movie> getMovieDetail(@Path ("movie_id") int id, @Query("api_key") String apiKey);
+    Call<Movie> getMovieDetail(@Path("movie_id") int id, @Query("api_key") String apiKey);
+
     @GET("movie/{movie_id}/account_states")
-    Call<Movie> getMovieState(@Path ("movie_id") int id, @Query("api_key") String apiKey,@Query("session_id") String session);
+    Call<Movie> getMovieState(@Path("movie_id") int id, @Query("api_key") String apiKey, @Query("session_id") String session);
 
     @Headers("Content-Type:application/json; charset=UTF-8")
     @POST("account/9178480/favorite?api_key=2f0d69a585b1ec8a833e56046239144b")
-    Call<FavResponse> addFavList(@Body FavMovieInfo movie,  @Query("session_id") String session);
+    Call<FavResponse> addFavList(@Body FavMovieInfo movie, @Query("session_id") String session);
 
     @GET("account/9178480/favorite/movies?api_key=2f0d69a585b1ec8a833e56046239144b")
-    Call<MovieResponse> getFavList( @Query("session_id") String session);
+    Call<MovieResponse> getFavList(@Query("session_id") String session);
 }

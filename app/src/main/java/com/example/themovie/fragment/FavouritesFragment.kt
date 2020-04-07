@@ -1,4 +1,4 @@
-package com.example.themovie .fragment
+package com.example.themovie.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -29,15 +29,15 @@ class FavouritesFragment : Fragment() {
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var movieListAdapter: FavListAdapter? = null
     private var movies: ArrayList<Movie>? = null
-    var sessionId: String ?=null
-
+    var sessionId: String? = null
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view: View = LayoutInflater.from(container?.context).inflate(R.layout.favourites_fragment, container, false)
+        val view: View = LayoutInflater.from(container?.context)
+            .inflate(R.layout.favourites_fragment, container, false)
         val pref =
             activity!!.getSharedPreferences("tkn", Context.MODE_PRIVATE)
         sessionId = pref.getString("sessionID", "empty")
@@ -62,14 +62,15 @@ class FavouritesFragment : Fragment() {
 
         return view
     }
-    private fun getFavList(sessionId: String?){
+
+    private fun getFavList(sessionId: String?) {
 
         swipeRefreshLayout.isRefreshing = true
         val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-        api?.getFavList( sessionId)
-            ?.enqueue(object : Callback<MovieResponse>{
+        api?.getFavList(sessionId)
+            ?.enqueue(object : Callback<MovieResponse> {
                 override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                    Log.d("FavouritesFragment","OnFailure")
+                    Log.d("FavouritesFragment", "OnFailure")
                 }
 
                 override fun onResponse(
@@ -77,9 +78,8 @@ class FavouritesFragment : Fragment() {
                     response: Response<MovieResponse>
                 ) {
                     Log.d("FavouritesFragment", response.toString())
-                    Log.d("FavouritesFragment", sessionId)
                     if (response.isSuccessful()) {
-                        val movies= response.body()
+                        val movies = response.body()
                         movieListAdapter?.moviesList = movies?.results
                         movieListAdapter?.notifyDataSetChanged()
                     }
@@ -89,6 +89,7 @@ class FavouritesFragment : Fragment() {
 
             })
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         // TODO: Use the ViewModel

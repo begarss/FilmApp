@@ -19,8 +19,9 @@ object RetrofitService {
         }
         return retrofit
     }
+
     fun getApi(): MovieApi? {
-        movieApi= getClient()?.create(MovieApi::class.java)
+        movieApi = getClient()?.create(MovieApi::class.java)
         return movieApi
     }
 }

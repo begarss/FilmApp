@@ -5,8 +5,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.themovie.BuildConfig
@@ -28,6 +30,7 @@ class LoginActivity : AppCompatActivity() {
     lateinit var btnlogin: Button
     lateinit var register: Button
     lateinit var preferences: SharedPreferences
+    lateinit var progressBar: ProgressBar
     var requestedToken: String? = null
     lateinit var TOKEN: String
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,11 +40,14 @@ class LoginActivity : AppCompatActivity() {
         email = findViewById(R.id.tv_login)
         password = findViewById(R.id.tv_psw)
         btnlogin = findViewById(R.id.b_login)
+        progressBar=findViewById(R.id.progressBar)
+        progressBar.visibility= View.INVISIBLE
+
         preferences =
             getSharedPreferences("tkn", Context.MODE_PRIVATE)
         btnlogin.setOnClickListener {
             getToken()
-
+            progressBar.visibility= View.VISIBLE
         }
 
 
@@ -68,8 +74,7 @@ class LoginActivity : AppCompatActivity() {
                             requestedToken = response.body()?.request_token
 
 
-                            Toast.makeText(this@LoginActivity, "Accessed ", Toast.LENGTH_LONG)
-                                .show()
+
                             login()
                         }
                     }
@@ -104,7 +109,9 @@ class LoginActivity : AppCompatActivity() {
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             getSessionId(requestedToken)
                             startActivity(intent)
-
+                            progressBar.visibility= View.GONE
+                            Toast.makeText(this@LoginActivity, "Accessed ", Toast.LENGTH_LONG)
+                                .show()
                         }
                     }
 
@@ -135,11 +142,7 @@ class LoginActivity : AppCompatActivity() {
                         response: Response<RequestSession>
                     ) {
                         if (response.body()?.success == true) {
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "getSessiosIdResponsed",
-                                Toast.LENGTH_SHORT
-                            ).show()
+
                             Log.d("pusk", response.body()?.session_id)
                             val edt = preferences.edit()
                             edt.putString("sessionID", response.body()?.session_id)

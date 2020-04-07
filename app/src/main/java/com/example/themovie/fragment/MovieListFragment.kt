@@ -30,7 +30,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-class MovieListFragment:Fragment(){
+class MovieListFragment : Fragment() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -38,20 +38,23 @@ class MovieListFragment:Fragment(){
     private var movieListAdapter: MovieListAdapter? = null
     private var movies: ArrayList<Movie>? = null
     lateinit var preferences: SharedPreferences
-    private var bigIm:ImageView?=null
-    private var bigTitle:TextView?=null
-    private var bigDate:TextView?=null
+    private var bigIm: ImageView? = null
+    private var bigTitle: TextView? = null
+    private var bigDate: TextView? = null
     lateinit var movie: Movie
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        val view: View = LayoutInflater.from(container?.context).inflate(R.layout.fragment_movie_list, container, false)
-       bigIm=view.findViewById(R.id.first_im)
-        bigIm?.visibility=View.INVISIBLE
-        bigTitle=view.findViewById(R.id.fm_movie_title)
-        bigTitle?.visibility=View.INVISIBLE
-        bigDate=view.findViewById(R.id.fm_movie_date)
-        bigDate?.visibility=View.INVISIBLE
+       
+        val view: View = LayoutInflater.from(container?.context)
+            .inflate(R.layout.fragment_movie_list, container, false)
+        bigIm = view.findViewById(R.id.first_im)
+        bigIm?.visibility = View.INVISIBLE
+        bigTitle = view.findViewById(R.id.fm_movie_title)
+        bigTitle?.visibility = View.INVISIBLE
+        bigDate = view.findViewById(R.id.fm_movie_date)
+        bigDate?.visibility = View.INVISIBLE
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -67,7 +70,7 @@ class MovieListFragment:Fragment(){
             recyclerView.layoutManager = GridLayoutManager(activity, 1)
             recyclerView.itemAnimator = DefaultItemAnimator()
             movies = ArrayList<Movie>()
-            bigIm?.visibility=View.INVISIBLE
+            bigIm?.visibility = View.INVISIBLE
 
             movieListAdapter = MovieListAdapter(movies)
             movieListAdapter?.notifyDataSetChanged()
@@ -77,50 +80,52 @@ class MovieListFragment:Fragment(){
         return view
     }
 
-     private fun getMovieList(){
-         swipeRefreshLayout.isRefreshing = true
-         val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-         api?.getPopularMoviesList(API_KEY,1)?.enqueue(object : Callback<MovieResponse> {
-             override fun onResponse(
-                 call: Call<MovieResponse>,
-                 response: Response<MovieResponse>
-             ) {
-                 if (response.isSuccessful()) {
-                     val movies= response.body()
-                     //movieListAdapter?.moviesList = movies?.results
-                     val list = response.body()?.results
-                     val list2=list!!.subList(1,list.lastIndex)
-                     movie = list.first()
-                     bigDate?.text=movie.release_date
-                     bigTitle?.text=movie.original_title
-                     bigIm?.visibility=View.VISIBLE
-                     bigTitle?.visibility=View.VISIBLE
-                     bigDate?.visibility=View.VISIBLE
-                     Glide.with(this@MovieListFragment)
-                         .load(movie.getPosterPath())
-                         .into(this@MovieListFragment.bigIm!!)
-                     movieListAdapter?.moviesList=list2
-                     movieListAdapter?.notifyDataSetChanged()
-                     bigIm?.setOnClickListener {
-                         if (view?.context is MainActivity) {
-                             val movieDetailFragment = MovieDetailFragment()
-                             (view?.context as MainActivity).fm?.beginTransaction()?.replace(R.id.fragment_container,movieDetailFragment)?.addToBackStack(null)?.commit()
-                             movieDetailFragment.getMovieDetail(movie?.id)
-                         }
+    private fun getMovieList() {
+        swipeRefreshLayout.isRefreshing = true
+        val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
+        api?.getPopularMoviesList(API_KEY, 1)?.enqueue(object : Callback<MovieResponse> {
+            override fun onResponse(
+                call: Call<MovieResponse>,
+                response: Response<MovieResponse>
+            ) {
+                if (response.isSuccessful()) {
+                    val movies = response.body()
+                    //movieListAdapter?.moviesList = movies?.results
+                    val list = response.body()?.results
+                    val list2 = list!!.subList(1, list.lastIndex)
+                    movie = list.first()
+                    bigDate?.text = movie.release_date
+                    bigTitle?.text = movie.original_title
+                    bigIm?.visibility = View.VISIBLE
+                    bigTitle?.visibility = View.VISIBLE
+                    bigDate?.visibility = View.VISIBLE
+                    Glide.with(this@MovieListFragment)
+                        .load(movie.getPosterPath())
+                        .into(this@MovieListFragment.bigIm!!)
+                    movieListAdapter?.moviesList = list2
+                    movieListAdapter?.notifyDataSetChanged()
+                    bigIm?.setOnClickListener {
+                        if (view?.context is MainActivity) {
+                            val movieDetailFragment = MovieDetailFragment()
+                            (view?.context as MainActivity).fm?.beginTransaction()
+                                ?.replace(R.id.fragment_container, movieDetailFragment)
+                                ?.addToBackStack(null)?.commit()
+                            movieDetailFragment.getMovieDetail(movie?.id)
+                        }
 
-                     }
+                    }
 
-                 }
-                 swipeRefreshLayout.isRefreshing = false
-             }
+                }
+                swipeRefreshLayout.isRefreshing = false
+            }
 
-             override fun onFailure(
-                 call: Call<MovieResponse>,
-                 t: Throwable
-             ) {
-                 Log.e(MovieListFragment::class.java.simpleName, t.toString())
-                 swipeRefreshLayout.isRefreshing = false
-             }
-         })
-     }
+            override fun onFailure(
+                call: Call<MovieResponse>,
+                t: Throwable
+            ) {
+                Log.e(MovieListFragment::class.java.simpleName, t.toString())
+                swipeRefreshLayout.isRefreshing = false
+            }
+        })
+    }
 }
