@@ -1,8 +1,8 @@
 package com.example.themovie
 
 import android.os.Bundle
-import android.view.Window
-import android.widget.Toolbar
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -29,23 +29,27 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_home -> {
                     fragment = MovieListFragment()
                     fm?.beginTransaction()
-                        ?.replace(R.id.fragment_container, fragment!!)
+                        ?.replace(R.id.fragment_container, fragment!!,"TAG1")
+                        ?.addToBackStack("firstFrag")
                         ?.commit()
                     bottomNavigationView.menu.findItem(R.id.nav_home).isChecked = true
-
+                    //Toast.makeText(this,supportFragmentManager.backStackEntryCount,Toast.LENGTH_SHORT).show()
                 }
                 R.id.nav_fav -> {
                     fragment = FavouritesFragment()
                     fm?.beginTransaction()
-                        ?.replace(R.id.fragment_container, fragment!!)
+                        ?.replace(R.id.fragment_container, fragment!!,"TAG2")
+                        ?.addToBackStack("Second")
                         ?.commit()
                     bottomNavigationView.menu.findItem(R.id.nav_fav).isChecked = true
+                    Log.d("lol",fm?.backStackEntryCount.toString())
 
                 }
                 R.id.nav_profile -> {
                     fragment = UserFragment()
                     fm?.beginTransaction()
                         ?.replace(R.id.fragment_container, fragment!!)
+                        ?.addToBackStack("Third")
                         ?.commit()
                     bottomNavigationView.menu.findItem(R.id.nav_profile).isChecked = true
 
@@ -56,6 +60,12 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             bottomNavigationView.selectedItemId = R.id.nav_home
         }
+    }
+    override fun onBackPressed() {
+        if (fm?.backStackEntryCount!! <=1) {
+            super.onBackPressed()
+        }else
+            fm?.popBackStack()
     }
 
 }
