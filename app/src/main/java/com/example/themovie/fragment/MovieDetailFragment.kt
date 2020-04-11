@@ -31,8 +31,8 @@ class MovieDetailFragment : Fragment() {
     private var movieDate: TextView? = null
     private var movieYear: TextView? = null
     private var movieDescription: TextView? = null
-    private var movie_id: Int? = null
-    private var poster: ImageView? = null
+    private var movieId: Int? = null
+    private lateinit var poster: ImageView
     private var likeBtn: ImageView? = null
     private var isLiked: Boolean? = null
     var sessionId: String? = null
@@ -45,7 +45,7 @@ class MovieDetailFragment : Fragment() {
             .inflate(R.layout.fragment_movie_detail, container, false)
         bindViews(v)
         val pref =
-            activity!!.getSharedPreferences("tkn", Context.MODE_PRIVATE)
+            requireActivity().getSharedPreferences("tkn", Context.MODE_PRIVATE)
         sessionId = pref.getString("sessionID", "empty")
         return v
     }
@@ -71,17 +71,17 @@ class MovieDetailFragment : Fragment() {
                     call: Call<Movie>,
                     response: Response<Movie>
                 ) {
-                    val dateTime = initialFormat.parse(response.body()?.release_date)
+                    val dateTime = initialFormat.parse(response.body()?.releaseDate)
                     movieDate?.setText(dateFormat.format(dateTime))
                     movieYear?.setText(dateYearFormat.format(dateTime))
-                    movieTitle?.setText(response.body()?.original_title)
+                    movieTitle?.setText(response.body()?.originalTitle)
                     movieDescription?.setText(response.body()?.overview)
                     movieJanre?.setText((response.body()?.genres?.first()?.name))
-                    Glide.with(view?.context!!)
+                    Glide.with(this@MovieDetailFragment)
                         .load(response.body()?.getPosterPath())
-                        .into(this@MovieDetailFragment.poster!!)
-                    movie_id = response.body()?.id
-                    isLiked = getState(movie_id)
+                        .into(this@MovieDetailFragment.poster)
+                    movieId = response.body()?.id
+                    isLiked = getState(movieId)
                     likeBtn?.setOnClickListener(View.OnClickListener {
                         if (isLiked == false) {
                             isLiked = true
@@ -91,12 +91,12 @@ class MovieDetailFragment : Fragment() {
                                 "Film added to favList",
                                 Toast.LENGTH_LONG
                             ).show()
-                            markAsFav(FavMovieInfo(true, movie_id, "movie"), sessionId)
+                            markAsFav(FavMovieInfo(true, movieId, "movie"), sessionId)
                             likeBtn?.refreshDrawableState()
                         } else {
                             isLiked = false
                             likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
-                            markAsFav(FavMovieInfo(false, movie_id, "movie"), sessionId)
+                            markAsFav(FavMovieInfo(false, movieId, "movie"), sessionId)
                             likeBtn?.refreshDrawableState()
 
                         }
@@ -137,26 +137,28 @@ class MovieDetailFragment : Fragment() {
 
     fun getState(movieId: Int?): Boolean? {
         try {
-            RetrofitService.getApi()
-                ?.getMovieState(movieId!!, BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
-                ?.enqueue(object : Callback<Movie> {
-                    override fun onFailure(call: Call<Movie>, t: Throwable) {
-                        Log.d("fav", "lol")
-                    }
+            if (movieId != null) {
+                RetrofitService.getApi()
+                    ?.getMovieState(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
+                    ?.enqueue(object : Callback<Movie> {
+                        override fun onFailure(call: Call<Movie>, t: Throwable) {
+                            Log.d("fav", "lol")
+                        }
 
-                    override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
-                        Log.d("pusk", response.toString())
-                        if (response.body()?.id == movie_id)
-                            isLiked = response.body()?.favorite
-                        if (isLiked == true) {
-                            likeBtn?.setImageResource(R.drawable.ic_favorite_black_24dp)
+                        override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
+                            Log.d("pusk", response.toString())
+                            if (response.body()?.id == movieId)
+                                isLiked = response.body()?.favorite
+                            if (isLiked == true) {
+                                likeBtn?.setImageResource(R.drawable.ic_favorite_black_24dp)
 
-                        } else
-                            likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+                            } else
+                                likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
 
-                    }
+                        }
 
-                })
+                    })
+            }
             return isLiked
         } catch (e: Exception) {
             Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()

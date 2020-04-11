@@ -28,7 +28,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var email: EditText
     private lateinit var password: EditText
     private lateinit var btnlogin: Button
-    private lateinit var register: Button
     lateinit var preferences: SharedPreferences
     private lateinit var progressBar: ProgressBar
     var requestedToken: String? = null
@@ -62,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
             api?.getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
                 ?.enqueue(object : Callback<RequestToken> {
                     override fun onFailure(call: Call<RequestToken>, t: Throwable) {
-                        Toast.makeText(this@LoginActivity, "Error api ket", Toast.LENGTH_LONG)
+                        Toast.makeText(this@LoginActivity, "Error api ket", Toast.LENGTH_LONG).show()
                     }
 
                     override fun onResponse(
@@ -70,13 +69,13 @@ class LoginActivity : AppCompatActivity() {
                         response: Response<RequestToken>
                     ) {
                         if (response.body()?.success == true) {
-                            requestedToken = response.body()?.request_token
+                            requestedToken = response.body()?.requestToken
                             login()
                         }
                     }
                 })
         } catch (e: Exception) {
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT)
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -110,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
 
                 })
         } catch (e: Exception) {
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT)
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
 
         }
     }
@@ -127,6 +126,7 @@ class LoginActivity : AppCompatActivity() {
                     override fun onFailure(call: Call<RequestSession>, t: Throwable) {
                         Log.d("pusk", "failure occured")
                     }
+
                     override fun onResponse(
                         call: Call<RequestSession>,
                         response: Response<RequestSession>

@@ -4,22 +4,22 @@ import com.google.gson.annotations.SerializedName
 
 class FavMovieInfo(
     favorite: Boolean,
-    media_id: Int?,
-    media_type: String
+    mediaId: Int?,
+    mediaType: String
 ) {
     @SerializedName("favorite")
     var favorite: Boolean = false
     @SerializedName("media_id")
-    var media_id: Int = 0
+    var mediaId: Int = 0
     @SerializedName("media_type")
-    var media_type: String = ""
+    var mediaType: String = ""
 
     init {
         this.favorite = favorite
-        if (media_id != null) {
-            this.media_id = media_id
+        if (mediaId != null) {
+            this.mediaId = mediaId
         }
-        this.media_type = media_type
+        this.mediaType = mediaType
 
     }
 }

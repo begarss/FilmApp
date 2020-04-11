@@ -9,5 +9,5 @@ data class RequestToken (
     @SerializedName("expires_at")
     val expires_at:String,
     @SerializedName("request_token")
-    val request_token: String
+    val requestToken: String
 )

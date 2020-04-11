@@ -42,11 +42,10 @@ class MovieListAdapter(
             val date = view.findViewById<TextView>(R.id.m_movie_date)
             val commentsCount = view.findViewById<TextView>(R.id.m_movie_cnt)
             val poster = view.findViewById<ImageView>(R.id.m_movie_poster)
-            val movie_id = movie?.id
-            title.text = movie?.original_title
-            commentsCount.text = movie?.vote_count.toString()
+            title.text = movie?.originalTitle
+            commentsCount.text = movie?.voteCount.toString()
             description.text = movie?.overview
-            val dateTime = initialFormat.parse(movie?.release_date)
+            val dateTime = initialFormat.parse(movie?.releaseDate)
             date.text = dateFormat.format(dateTime)
             Glide.with(view.context)
                 .load(movie?.getPosterPath())

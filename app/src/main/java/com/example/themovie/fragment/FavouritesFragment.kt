@@ -39,7 +39,7 @@ class FavouritesFragment : Fragment() {
         val view: View = LayoutInflater.from(container?.context)
             .inflate(R.layout.favourites_fragment, container, false)
         val pref =
-            activity!!.getSharedPreferences("tkn", Context.MODE_PRIVATE)
+            requireActivity().getSharedPreferences("tkn", Context.MODE_PRIVATE)
         sessionId = pref.getString("sessionID", "empty")
         bindViews(view)
         getFavList(sessionId)

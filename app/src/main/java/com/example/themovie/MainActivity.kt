@@ -13,14 +13,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
-    var fm: FragmentManager? = null
+    val fm: FragmentManager? = supportFragmentManager
     var fragment: Fragment? = null
-    lateinit var toolbar: androidx.appcompat.widget.Toolbar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        fm = supportFragmentManager
         fragment = fm?.findFragmentById(R.id.fragment_container)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bot)
@@ -65,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         if (fm?.backStackEntryCount!! <= 1) {
             super.onBackPressed()
         } else
-            fm?.popBackStack()
+            fm.popBackStack()
     }
 
 }
