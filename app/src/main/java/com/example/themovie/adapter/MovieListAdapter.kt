@@ -11,7 +11,6 @@ import com.example.themovie.MainActivity
 import com.example.themovie.R
 import com.example.themovie.fragment.MovieDetailFragment
 import com.example.themovie.model.Movie
-import kotlinx.android.synthetic.main.activity_main.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -59,10 +58,17 @@ class MovieListAdapter(
                     if (movie != null) {
                         movieDetailFragment.getMovieDetail(movie.id)
                     }
+                    val movieDetailFragment = MovieDetailFragment.newInstance(movie)
+                    (view.context as MainActivity).fm?.beginTransaction()?.replace(R.id.fragment_container,movieDetailFragment!!)?.addToBackStack(null)?.commit()
+                    movieDetailFragment?.getMovieDetail(movie!!.id)
                 }
 
             }
         }
 
+    }
+    fun clearAll() {
+        (moviesList as? ArrayList<Movie>)?.clear()
+        notifyDataSetChanged()
     }
 }

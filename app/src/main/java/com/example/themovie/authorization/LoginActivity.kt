@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.themovie.BuildConfig
 import com.example.themovie.Fav.RequestSession
 import com.example.themovie.Fav.SessionId
-import com.example.themovie.MainActivity
+import com.example.themovie.activity.MainActivity
 import com.example.themovie.R
 import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService

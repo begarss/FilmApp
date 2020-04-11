@@ -34,6 +34,7 @@ class MovieListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
     private var movieListAdapter: MovieListAdapter? = null
     private var movies: ArrayList<Movie>? = null
     lateinit var preferences: SharedPreferences

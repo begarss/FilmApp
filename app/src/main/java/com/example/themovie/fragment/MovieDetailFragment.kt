@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -36,6 +37,18 @@ class MovieDetailFragment : Fragment() {
     private var likeBtn: ImageView? = null
     private var isLiked: Boolean? = null
     var sessionId: String? = null
+    private var backBtn: ImageButton? = null
+    var sessionId: String ?=null
+    private var movie:Movie? = null
+
+    companion object{
+        fun newInstance(movie: Movie?): MovieDetailFragment? {
+            val fragment = MovieDetailFragment()
+            fragment.movie = movie
+            return fragment
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,6 +71,15 @@ class MovieDetailFragment : Fragment() {
         poster = v.findViewById(R.id.m_avatar_detail)
         likeBtn = v.findViewById(R.id.fav_btn)
         movieYear = v.findViewById(R.id.m_movie_release_date)
+        backBtn = v.findViewById(R.id.back_btn)
+
+        backBtn?.setOnClickListener {
+            activity?.supportFragmentManager?.popBackStack()
+        }
+        val pref =
+            activity!!.getSharedPreferences("tkn",Context.MODE_PRIVATE)
+        sessionId = pref.getString("sessionID", "empty")
+        return v
     }
 
     fun getMovieDetail(id: Int) {

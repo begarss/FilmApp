@@ -1,7 +1,12 @@
 package com.example.themovie.model
 
+import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 
+@Entity(tableName = "movie_table")
 data class Movie(
     @SerializedName("id")
     val id: Int,
@@ -21,7 +26,10 @@ data class Movie(
     val genres: List<Genre>? = null,
 
     val favorite: Boolean? = null
-
+    @ColumnInfo(name = "ListData")
+@TypeConverters(GenresConverter::class)
+val genres: List<Genre>? = null
+)
 ) {
     fun getPosterPath(): String {
         return "https://image.tmdb.org/t/p/w500" + poster_path
