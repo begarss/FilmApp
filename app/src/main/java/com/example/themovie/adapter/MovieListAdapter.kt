@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.themovie.MainActivity
 import com.example.themovie.R
+import com.example.themovie.activity.MainActivity
 import com.example.themovie.fragment.MovieDetailFragment
 import com.example.themovie.model.Movie
 import java.text.SimpleDateFormat
@@ -58,7 +58,6 @@ class MovieListAdapter(
                     if (movie != null) {
                         movieDetailFragment.getMovieDetail(movie.id)
                     }
-                    val movieDetailFragment = MovieDetailFragment.newInstance(movie)
                     (view.context as MainActivity).fm?.beginTransaction()?.replace(R.id.fragment_container,movieDetailFragment!!)?.addToBackStack(null)?.commit()
                     movieDetailFragment?.getMovieDetail(movie!!.id)
                 }

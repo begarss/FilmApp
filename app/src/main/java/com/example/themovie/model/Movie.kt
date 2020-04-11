@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 
 @Entity(tableName = "movie_table")
 data class Movie(
+    @PrimaryKey
     @SerializedName("id")
     val id: Int,
     @SerializedName("vote_count")
@@ -16,20 +17,19 @@ data class Movie(
     val poster_path: String? = null,
     @SerializedName("original_title")
     val originalTitle: String? = null,
-    @SerializedName("genre_ids")
-    val genreIds: List<Int>? = null,
+//    @SerializedName("genre_ids")
+//    val genreIds: List<Int>? = null,
     @SerializedName("overview")
     val overview: String? = null,
     @SerializedName("release_date")
     val releaseDate: String? = null,
-    @SerializedName("genres")
-    val genres: List<Genre>? = null,
+//    @SerializedName("genres")
+//    val genres: List<Genre>? = null,
 
-    val favorite: Boolean? = null
+    val favorite: Boolean? = null,
     @ColumnInfo(name = "ListData")
-@TypeConverters(GenresConverter::class)
-val genres: List<Genre>? = null
-)
+    @TypeConverters(GenresConverter::class)
+    val genres: List<Genre>? = null
 ) {
     fun getPosterPath(): String {
         return "https://image.tmdb.org/t/p/w500" + poster_path

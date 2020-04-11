@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.themovie.BuildConfig
-import com.example.themovie.MainActivity
 import com.example.themovie.R
+import com.example.themovie.activity.MainActivity
 import com.example.themovie.adapter.MovieListAdapter
 import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService
@@ -34,7 +34,6 @@ class MovieListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
     private var movieListAdapter: MovieListAdapter? = null
     private var movies: ArrayList<Movie>? = null
     lateinit var preferences: SharedPreferences

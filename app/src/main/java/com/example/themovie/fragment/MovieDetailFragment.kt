@@ -36,12 +36,11 @@ class MovieDetailFragment : Fragment() {
     private lateinit var poster: ImageView
     private var likeBtn: ImageView? = null
     private var isLiked: Boolean? = null
-    var sessionId: String? = null
     private var backBtn: ImageButton? = null
-    var sessionId: String ?=null
-    private var movie:Movie? = null
+    var sessionId: String? = null
+    private var movie: Movie? = null
 
-    companion object{
+    companion object {
         fun newInstance(movie: Movie?): MovieDetailFragment? {
             val fragment = MovieDetailFragment()
             fragment.movie = movie
@@ -76,10 +75,7 @@ class MovieDetailFragment : Fragment() {
         backBtn?.setOnClickListener {
             activity?.supportFragmentManager?.popBackStack()
         }
-        val pref =
-            activity!!.getSharedPreferences("tkn",Context.MODE_PRIVATE)
-        sessionId = pref.getString("sessionID", "empty")
-        return v
+
     }
 
     fun getMovieDetail(id: Int) {
@@ -162,12 +158,12 @@ class MovieDetailFragment : Fragment() {
             if (movieId != null) {
                 RetrofitService.getApi()
                     ?.getMovieState(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
-                    ?.enqueue(object : Callback<Movie> {
-                        override fun onFailure(call: Call<Movie>, t: Throwable) {
+                    ?.enqueue(object : Callback<Movie?> {
+                        override fun onFailure(call: Call<Movie?>, t: Throwable) {
                             Log.d("fav", "lol")
                         }
 
-                        override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
+                        override fun onResponse(call: Call<Movie?>, response: Response<Movie?>) {
                             Log.d("pusk", response.toString())
                             if (response.body()?.id == movieId)
                                 isLiked = response.body()?.favorite
