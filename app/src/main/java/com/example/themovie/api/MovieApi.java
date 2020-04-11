@@ -21,9 +21,6 @@ public interface MovieApi {
     @GET("movie/popular")
     Call<MovieResponse> getPopularMoviesList(@Query("api_key") String apiKey, @Query("page") int page);
 
-//    @POST("authentication/token/validate_with_login")
-//    Call<RequestBody> getRequestBody(@Query("api_key") String apiKey);
-
     @POST("authentication/token/validate_with_login?api_key=2f0d69a585b1ec8a833e56046239144b")
     Call<RequestToken> login(@Body LoginData loginData);
 

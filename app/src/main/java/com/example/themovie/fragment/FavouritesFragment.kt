@@ -25,8 +25,8 @@ import retrofit2.Response
 import java.util.ArrayList
 
 class FavouritesFragment : Fragment() {
-    lateinit var recyclerView: RecyclerView
-    lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var movieListAdapter: FavListAdapter? = null
     private var movies: ArrayList<Movie>? = null
     var sessionId: String? = null
@@ -41,6 +41,20 @@ class FavouritesFragment : Fragment() {
         val pref =
             activity!!.getSharedPreferences("tkn", Context.MODE_PRIVATE)
         sessionId = pref.getString("sessionID", "empty")
+        bindViews(view)
+        getFavList(sessionId)
+        swipeRefreshLayout.setOnRefreshListener {
+            recyclerView.layoutManager = GridLayoutManager(activity, 1)
+            recyclerView.itemAnimator = DefaultItemAnimator()
+            movies = ArrayList<Movie>()
+            movieListAdapter = FavListAdapter(movies)
+            movieListAdapter?.notifyDataSetChanged()
+            getFavList(sessionId)
+        }
+        return view
+    }
+
+    private fun bindViews(view: View) {
         recyclerView = view.findViewById(R.id.Frecycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -49,18 +63,6 @@ class FavouritesFragment : Fragment() {
         recyclerView.adapter = movieListAdapter
         movieListAdapter?.notifyDataSetChanged()
         swipeRefreshLayout = view.findViewById(R.id.main_content)
-        getFavList(sessionId)
-        swipeRefreshLayout.setOnRefreshListener {
-            recyclerView.layoutManager = GridLayoutManager(activity, 1)
-            recyclerView.itemAnimator = DefaultItemAnimator()
-            movies = ArrayList<Movie>()
-
-            movieListAdapter = FavListAdapter(movies)
-            movieListAdapter?.notifyDataSetChanged()
-            getFavList(sessionId)
-        }
-
-        return view
     }
 
     private fun getFavList(sessionId: String?) {
@@ -88,11 +90,6 @@ class FavouritesFragment : Fragment() {
                 }
 
             })
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
     }
 
 }

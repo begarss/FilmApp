@@ -9,8 +9,8 @@ class LoginData(username:String, password:String, token: String?){
     init {
         this.username=username
         this.password=password
-        request_token=token!!
-        
+        if (token != null) {
+            request_token=token
+        }
     }
-
 }

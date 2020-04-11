@@ -57,7 +57,9 @@ class MovieListAdapter(
                     (view.context as MainActivity).fm?.beginTransaction()
                         ?.replace(R.id.fragment_container, movieDetailFragment)
                         ?.addToBackStack(null)?.commit()
-                    movieDetailFragment.getMovieDetail(movie!!.id)
+                    if (movie != null) {
+                        movieDetailFragment.getMovieDetail(movie.id)
+                    }
                 }
 
             }

@@ -16,7 +16,9 @@ class FavMovieInfo(
 
     init {
         this.favorite = favorite
-        this.media_id = media_id!!
+        if (media_id != null) {
+            this.media_id = media_id
+        }
         this.media_type = media_type
 
     }

@@ -25,14 +25,14 @@ import retrofit2.Response
 
 
 class LoginActivity : AppCompatActivity() {
-    lateinit var email: EditText
-    lateinit var password: EditText
-    lateinit var btnlogin: Button
-    lateinit var register: Button
+    private lateinit var email: EditText
+    private lateinit var password: EditText
+    private lateinit var btnlogin: Button
+    private lateinit var register: Button
     lateinit var preferences: SharedPreferences
-    lateinit var progressBar: ProgressBar
+    private lateinit var progressBar: ProgressBar
     var requestedToken: String? = null
-    lateinit var TOKEN: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
@@ -40,21 +40,20 @@ class LoginActivity : AppCompatActivity() {
         email = findViewById(R.id.tv_login)
         password = findViewById(R.id.tv_psw)
         btnlogin = findViewById(R.id.b_login)
-        progressBar=findViewById(R.id.progressBar)
-        progressBar.visibility= View.INVISIBLE
+        progressBar = findViewById(R.id.progressBar)
+        progressBar.visibility = View.INVISIBLE
 
         preferences =
             getSharedPreferences("tkn", Context.MODE_PRIVATE)
         btnlogin.setOnClickListener {
             getToken()
-            progressBar.visibility= View.VISIBLE
+            progressBar.visibility = View.VISIBLE
         }
 
 
     }
 
     fun getToken() {
-
         try {
             if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
                 return
@@ -72,17 +71,12 @@ class LoginActivity : AppCompatActivity() {
                     ) {
                         if (response.body()?.success == true) {
                             requestedToken = response.body()?.request_token
-
-
-
                             login()
                         }
                     }
-
                 })
         } catch (e: Exception) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT)
-
         }
     }
 
@@ -97,7 +91,6 @@ class LoginActivity : AppCompatActivity() {
                     override fun onFailure(call: Call<RequestToken>, t: Throwable) {
                         Toast.makeText(this@LoginActivity, "Incorrect data", Toast.LENGTH_SHORT)
                             .show()
-
                     }
 
                     override fun onResponse(
@@ -109,7 +102,7 @@ class LoginActivity : AppCompatActivity() {
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             getSessionId(requestedToken)
                             startActivity(intent)
-                            progressBar.visibility= View.GONE
+                            progressBar.visibility = View.GONE
                             Toast.makeText(this@LoginActivity, "Accessed ", Toast.LENGTH_LONG)
                                 .show()
                         }
@@ -133,10 +126,7 @@ class LoginActivity : AppCompatActivity() {
                 ?.enqueue(object : Callback<RequestSession> {
                     override fun onFailure(call: Call<RequestSession>, t: Throwable) {
                         Log.d("pusk", "failure occured")
-                        //Toast.makeText(this@LoginActivity, "getSessiosId", Toast.LENGTH_SHORT).show()
-
                     }
-
                     override fun onResponse(
                         call: Call<RequestSession>,
                         response: Response<RequestSession>

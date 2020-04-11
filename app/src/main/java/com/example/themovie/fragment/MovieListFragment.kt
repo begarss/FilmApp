@@ -32,7 +32,7 @@ import java.util.*
 
 class MovieListFragment : Fragment() {
 
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private val API_KEY: String = "d118a5a4e56930c8ce9bd2321609d877"
     private var movieListAdapter: MovieListAdapter? = null
@@ -41,14 +41,32 @@ class MovieListFragment : Fragment() {
     private var bigIm: ImageView? = null
     private var bigTitle: TextView? = null
     private var bigDate: TextView? = null
-    lateinit var movie: Movie
+    private lateinit var movie: Movie
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-       
+
         val view: View = LayoutInflater.from(container?.context)
             .inflate(R.layout.fragment_movie_list, container, false)
+        bindViews(view)
+        preferences =
+            requireActivity().getSharedPreferences("tkn", Context.MODE_PRIVATE)
+        getMovieList()
+        swipeRefreshLayout.setOnRefreshListener {
+            recyclerView.layoutManager = GridLayoutManager(activity, 1)
+            recyclerView.itemAnimator = DefaultItemAnimator()
+            movies = ArrayList<Movie>()
+            bigIm?.visibility = View.INVISIBLE
+            movieListAdapter = MovieListAdapter(movies)
+            movieListAdapter?.notifyDataSetChanged()
+            getMovieList()
+        }
+
+        return view
+    }
+
+    private fun bindViews(view: View) {
         bigIm = view.findViewById(R.id.first_im)
         bigIm?.visibility = View.INVISIBLE
         bigTitle = view.findViewById(R.id.fm_movie_title)
@@ -63,21 +81,6 @@ class MovieListFragment : Fragment() {
         recyclerView.adapter = movieListAdapter
         movieListAdapter?.notifyDataSetChanged()
         swipeRefreshLayout = view.findViewById(R.id.main_content)
-        preferences =
-            activity!!.getSharedPreferences("tkn", Context.MODE_PRIVATE)
-        getMovieList()
-        swipeRefreshLayout.setOnRefreshListener {
-            recyclerView.layoutManager = GridLayoutManager(activity, 1)
-            recyclerView.itemAnimator = DefaultItemAnimator()
-            movies = ArrayList<Movie>()
-            bigIm?.visibility = View.INVISIBLE
-
-            movieListAdapter = MovieListAdapter(movies)
-            movieListAdapter?.notifyDataSetChanged()
-            getMovieList()
-        }
-
-        return view
     }
 
     private fun getMovieList() {
@@ -89,11 +92,11 @@ class MovieListFragment : Fragment() {
                 response: Response<MovieResponse>
             ) {
                 if (response.isSuccessful()) {
-                    val movies = response.body()
-                    //movieListAdapter?.moviesList = movies?.results
                     val list = response.body()?.results
-                    val list2 = list!!.subList(1, list.lastIndex)
-                    movie = list.first()
+                    val list2 = list?.subList(1, list.lastIndex)
+                    if (list != null) {
+                        movie = list.first()
+                    }
                     bigDate?.text = movie.release_date
                     bigTitle?.text = movie.original_title
                     bigIm?.visibility = View.VISIBLE

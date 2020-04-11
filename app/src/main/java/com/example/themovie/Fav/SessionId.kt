@@ -7,6 +7,8 @@ class SessionId(token: String?) {
     var request_token: String = ""
 
     init {
-        request_token = token!!
+        if (token != null) {
+            request_token = token
+        }
     }
 }

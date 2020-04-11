@@ -43,6 +43,14 @@ class MovieDetailFragment : Fragment() {
     ): View? {
         val v: View = LayoutInflater.from(container?.context)
             .inflate(R.layout.fragment_movie_detail, container, false)
+        bindViews(v)
+        val pref =
+            activity!!.getSharedPreferences("tkn", Context.MODE_PRIVATE)
+        sessionId = pref.getString("sessionID", "empty")
+        return v
+    }
+
+    private fun bindViews(v: View) {
         movieTitle = v.findViewById(R.id.m_movie_title)
         movieJanre = v.findViewById(R.id.m_movie_genre)
         movieDate = v.findViewById(R.id.m_movie_date_detail)
@@ -50,11 +58,6 @@ class MovieDetailFragment : Fragment() {
         poster = v.findViewById(R.id.m_avatar_detail)
         likeBtn = v.findViewById(R.id.fav_btn)
         movieYear = v.findViewById(R.id.m_movie_release_date)
-
-        val pref =
-            activity!!.getSharedPreferences("tkn", Context.MODE_PRIVATE)
-        sessionId = pref.getString("sessionID", "empty")
-        return v
     }
 
     fun getMovieDetail(id: Int) {
@@ -79,8 +82,6 @@ class MovieDetailFragment : Fragment() {
                         .into(this@MovieDetailFragment.poster!!)
                     movie_id = response.body()?.id
                     isLiked = getState(movie_id)
-
-
                     likeBtn?.setOnClickListener(View.OnClickListener {
                         if (isLiked == false) {
                             isLiked = true
@@ -95,7 +96,6 @@ class MovieDetailFragment : Fragment() {
                         } else {
                             isLiked = false
                             likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
-
                             markAsFav(FavMovieInfo(false, movie_id, "movie"), sessionId)
                             likeBtn?.refreshDrawableState()
 
@@ -137,7 +137,6 @@ class MovieDetailFragment : Fragment() {
 
     fun getState(movieId: Int?): Boolean? {
         try {
-
             RetrofitService.getApi()
                 ?.getMovieState(movieId!!, BuildConfig.THE_MOVIE_DB_API_TOKEN, sessionId)
                 ?.enqueue(object : Callback<Movie> {
@@ -166,8 +165,4 @@ class MovieDetailFragment : Fragment() {
         return isLiked
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
-    }
 }
