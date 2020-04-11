@@ -24,13 +24,21 @@ import com.example.themovie.adapter.MovieListAdapter
 import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService
 import com.example.themovie.model.Movie
+import com.example.themovie.model.MovieDao
+import com.example.themovie.model.MovieDatabase
 import com.example.themovie.model.MovieResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
+import kotlinx.coroutines.*
 
-class MovieListFragment : Fragment() {
+import java.util.*
+import kotlin.coroutines.CoroutineContext
+
+class MovieListFragment : Fragment(), CoroutineScope {
 
     private lateinit var recyclerView: RecyclerView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -41,6 +49,10 @@ class MovieListFragment : Fragment() {
     private var bigTitle: TextView? = null
     private var bigDate: TextView? = null
     private lateinit var movie: Movie
+    val job = Job()
+    var movieDao: MovieDao? = null
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -48,9 +60,12 @@ class MovieListFragment : Fragment() {
 
         val view: View = LayoutInflater.from(container?.context)
             .inflate(R.layout.fragment_movie_list, container, false)
+        movieDao = MovieDatabase.getDatabase(view.context).movieDao()
+
         bindViews(view)
         preferences =
             requireActivity().getSharedPreferences("tkn", Context.MODE_PRIVATE)
+        getMovieCoroutine()
         getMovieList()
         swipeRefreshLayout.setOnRefreshListener {
             recyclerView.layoutManager = GridLayoutManager(activity, 1)
@@ -59,6 +74,7 @@ class MovieListFragment : Fragment() {
             bigIm.visibility = View.INVISIBLE
             movieListAdapter = MovieListAdapter(movies)
             movieListAdapter?.notifyDataSetChanged()
+            getMovieCoroutine()
             getMovieList()
         }
 
@@ -85,49 +101,78 @@ class MovieListFragment : Fragment() {
     private fun getMovieList() {
         swipeRefreshLayout.isRefreshing = true
         val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-        api?.getPopularMoviesList(BuildConfig.THE_MOVIE_DB_API_TOKEN, 1)?.enqueue(object : Callback<MovieResponse> {
-            override fun onResponse(
-                call: Call<MovieResponse>,
-                response: Response<MovieResponse>
-            ) {
-                if (response.isSuccessful()) {
-                    val list = response.body()?.results
-                    val list2 = list?.subList(1, list.lastIndex)
-                    if (list != null) {
-                        movie = list.first()
-                    }
-                    bigDate?.text = movie.releaseDate
-                    bigTitle?.text = movie.originalTitle
-                    bigIm.visibility = View.VISIBLE
-                    bigTitle?.visibility = View.VISIBLE
-                    bigDate?.visibility = View.VISIBLE
-                    Glide.with(this@MovieListFragment)
-                        .load(movie.getPosterPath())
-                        .into(this@MovieListFragment.bigIm)
-                    movieListAdapter?.moviesList = list2
-                    movieListAdapter?.notifyDataSetChanged()
-                    bigIm.setOnClickListener {
-                        if (view?.context is MainActivity) {
-                            val movieDetailFragment = MovieDetailFragment()
-                            (view?.context as MainActivity).fm?.beginTransaction()
-                                ?.replace(R.id.fragment_container, movieDetailFragment)
-                                ?.addToBackStack(null)?.commit()
-                            movieDetailFragment.getMovieDetail(movie.id)
+        api?.getPopularMoviesList(BuildConfig.THE_MOVIE_DB_API_TOKEN, 1)
+            ?.enqueue(object : Callback<MovieResponse> {
+                override fun onResponse(
+                    call: Call<MovieResponse>,
+                    response: Response<MovieResponse>
+                ) {
+                    if (response.isSuccessful()) {
+                        val list = response.body()?.results
+                        val list2 = list?.subList(1, list.lastIndex)
+                        if (list != null) {
+                            movie = list.first()
+                        }
+                        bigDate?.text = movie.releaseDate
+                        bigTitle?.text = movie.originalTitle
+                        bigIm.visibility = View.VISIBLE
+                        bigTitle?.visibility = View.VISIBLE
+                        bigDate?.visibility = View.VISIBLE
+                        Glide.with(this@MovieListFragment)
+                            .load(movie.getPosterPath())
+                            .into(this@MovieListFragment.bigIm)
+                        //movieListAdapter?.moviesList = list2
+                        movieListAdapter?.notifyDataSetChanged()
+                        bigIm.setOnClickListener {
+                            if (view?.context is MainActivity) {
+                                val movieDetailFragment = MovieDetailFragment()
+                                (view?.context as MainActivity).fm?.beginTransaction()
+                                    ?.replace(R.id.fragment_container, movieDetailFragment)
+                                    ?.addToBackStack(null)?.commit()
+                                movieDetailFragment.getMovieDetail(movie.id)
+                            }
+
                         }
 
                     }
-
+                    swipeRefreshLayout.isRefreshing = false
                 }
-                swipeRefreshLayout.isRefreshing = false
-            }
 
-            override fun onFailure(
-                call: Call<MovieResponse>,
-                t: Throwable
-            ) {
-                Log.e(MovieListFragment::class.java.simpleName, t.toString())
-                swipeRefreshLayout.isRefreshing = false
+                override fun onFailure(
+                    call: Call<MovieResponse>,
+                    t: Throwable
+                ) {
+                    Log.e(MovieListFragment::class.java.simpleName, t.toString())
+                    swipeRefreshLayout.isRefreshing = false
+                }
+            })
+    }
+
+    private fun getMovieCoroutine() {
+        launch {
+            swipeRefreshLayout.isRefreshing = true
+            val list = withContext(Dispatchers.IO) {
+                try {
+                    val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
+                    val response =
+                        api?.getPopularMoviesListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, 1)
+                    if (response?.isSuccessful()!!) {
+                        val result = response.body()
+                        if (result?.results.isNullOrEmpty()) {
+                            movieDao?.insertAll(result!!.results)
+                        }
+                        result!!.results
+                    } else {
+                        movieDao?.getAll() ?: emptyList<Movie>()
+                    }
+                } catch (e: Exception) {
+                    Log.e("Moviedatabase", e.toString())
+                    movieDao?.getAll() ?: emptyList<Movie>()
+                }
             }
-        })
+            movieListAdapter?.moviesList = list
+            movieListAdapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 }
