@@ -66,7 +66,7 @@ class MovieListFragment : Fragment(), CoroutineScope {
         preferences =
             requireActivity().getSharedPreferences("tkn", Context.MODE_PRIVATE)
         getMovieCoroutine()
-        getMovieList()
+//        getMovieList()
         swipeRefreshLayout.setOnRefreshListener {
             recyclerView.layoutManager = GridLayoutManager(activity, 1)
             recyclerView.itemAnimator = DefaultItemAnimator()
@@ -75,7 +75,7 @@ class MovieListFragment : Fragment(), CoroutineScope {
             movieListAdapter = MovieListAdapter(movies)
             movieListAdapter?.notifyDataSetChanged()
             getMovieCoroutine()
-            getMovieList()
+//            getMovieList()
         }
 
         return view
