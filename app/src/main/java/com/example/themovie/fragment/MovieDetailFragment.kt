@@ -19,14 +19,19 @@ import com.example.themovie.R
 import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService
 import com.example.themovie.model.Movie
+import com.example.themovie.model.MovieDao
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
-class MovieDetailFragment : Fragment() {
+class MovieDetailFragment : Fragment(),CoroutineScope {
+
+    private val job = Job()
     private var movieTitle: TextView? = null
     private var movieJanre: TextView? = null
     private var movieDate: TextView? = null
@@ -39,6 +44,10 @@ class MovieDetailFragment : Fragment() {
     private var backBtn: ImageButton? = null
     var sessionId: String? = null
     private var movie: Movie? = null
+    var movieDao: MovieDao? = null
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     companion object {
         fun newInstance(movie: Movie?): MovieDetailFragment? {
@@ -125,6 +134,54 @@ class MovieDetailFragment : Fragment() {
             })
     }
 
+    fun getMovieDetailCoroutine(id: Int) {
+        launch {
+            val dateFormat = SimpleDateFormat("MMMM d, YYYY H:m", Locale.ENGLISH)
+            val dateYearFormat = SimpleDateFormat("YYYY", Locale.ENGLISH)
+            val initialFormat = SimpleDateFormat("YY-MM-DD", Locale.ENGLISH)
+            try{
+                    val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
+                    val response = api?.getMovieDetailCoroutine(id, BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                    if(response?.isSuccessful()!!){
+                        val result = response.body()
+                        if(result != null){
+                            val dateTime = initialFormat.parse(result?.releaseDate)
+                            movieDate?.setText(dateFormat.format(dateTime))
+                            movieYear?.setText(dateYearFormat.format(dateTime))
+                            movieTitle?.setText(result.originalTitle)
+                            movieDescription?.setText(result.overview)
+                            movieJanre?.setText((result.genres?.first()?.name))
+                            Glide.with(this@MovieDetailFragment)
+                                .load(result.getPosterPath())
+                                .into(this@MovieDetailFragment.poster)
+                            movieId = result.id
+                            isLiked = getState(movieId)
+                            likeBtn?.setOnClickListener(View.OnClickListener {
+                                if (isLiked == false) {
+                                    isLiked = true
+                                    likeBtn?.setImageResource(R.drawable.ic_favorite_black_24dp)
+                                    Toast.makeText(
+                                        activity,
+                                        "Film added to favList",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    markAsFav(FavMovieInfo(true, movieId, "movie"), sessionId)
+                                    likeBtn?.refreshDrawableState()
+                                } else {
+                                    isLiked = false
+                                    likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+                                    markAsFav(FavMovieInfo(false, movieId, "movie"), sessionId)
+                                    likeBtn?.refreshDrawableState()
+
+                                }
+                            })
+                        }
+
+
+                    }
+                }catch (e: Exception){}
+            }
+        }
 
     fun markAsFav(info: FavMovieInfo, sessionId: String?) {
         try {

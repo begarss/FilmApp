@@ -57,7 +57,8 @@ class FavListAdapter(
                         ?.replace(R.id.fragment_container, movieDetailFragment)
                         ?.addToBackStack(null)?.commit()
                     if (movie != null) {
-                        movieDetailFragment.getMovieDetail(movie.id)
+//                        movieDetailFragment.getMovieDetail(movie.id)
+                        movieDetailFragment.getMovieDetailCoroutine(movie.id)
                     }
                 }
 

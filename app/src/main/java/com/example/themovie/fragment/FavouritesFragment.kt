@@ -19,18 +19,28 @@ import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService
 import com.example.themovie.model.Movie
 import com.example.themovie.model.MovieResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.ArrayList
+import kotlin.coroutines.CoroutineContext
 
-class FavouritesFragment : Fragment() {
+class FavouritesFragment : Fragment(), CoroutineScope {
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var movieListAdapter: FavListAdapter? = null
     private var movies: ArrayList<Movie>? = null
     var sessionId: String? = null
 
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,14 +52,16 @@ class FavouritesFragment : Fragment() {
             requireActivity().getSharedPreferences("tkn", Context.MODE_PRIVATE)
         sessionId = pref.getString("sessionID", "empty")
         bindViews(view)
-        getFavList(sessionId)
+//        getFavList(sessionId)
+        getFavListCoroutine(sessionId)
         swipeRefreshLayout.setOnRefreshListener {
             recyclerView.layoutManager = GridLayoutManager(activity, 1)
             recyclerView.itemAnimator = DefaultItemAnimator()
             movies = ArrayList<Movie>()
             movieListAdapter = FavListAdapter(movies)
             movieListAdapter?.notifyDataSetChanged()
-            getFavList(sessionId)
+//            getFavList(sessionId)
+            getFavListCoroutine(sessionId)
         }
         return view
     }
@@ -92,4 +104,25 @@ class FavouritesFragment : Fragment() {
             })
     }
 
+    private fun getFavListCoroutine(sessionId: String?) {
+        launch {
+            swipeRefreshLayout.isRefreshing = true
+            try {
+                val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
+                val response = api?.getFavListCoroutine(sessionId)
+                if (response!!.isSuccessful()) {
+                    val movies = response.body()
+                    movieListAdapter?.moviesList = movies?.results
+                    movieListAdapter?.notifyDataSetChanged()
+                }
+                swipeRefreshLayout.isRefreshing = false
+            }catch (e:Exception){}
+        }
+
+    }
 }
+
+
+
+
+

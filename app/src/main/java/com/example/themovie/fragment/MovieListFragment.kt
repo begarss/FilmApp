@@ -51,6 +51,7 @@ class MovieListFragment : Fragment(), CoroutineScope {
     private lateinit var movie: Movie
     val job = Job()
     var movieDao: MovieDao? = null
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -66,7 +67,7 @@ class MovieListFragment : Fragment(), CoroutineScope {
         preferences =
             requireActivity().getSharedPreferences("tkn", Context.MODE_PRIVATE)
         getMovieCoroutine()
-//        getMovieList()
+        getMovieList()
         swipeRefreshLayout.setOnRefreshListener {
             recyclerView.layoutManager = GridLayoutManager(activity, 1)
             recyclerView.itemAnimator = DefaultItemAnimator()
@@ -75,7 +76,7 @@ class MovieListFragment : Fragment(), CoroutineScope {
             movieListAdapter = MovieListAdapter(movies)
             movieListAdapter?.notifyDataSetChanged()
             getMovieCoroutine()
-//            getMovieList()
+            getMovieList()
         }
 
         return view
@@ -129,7 +130,8 @@ class MovieListFragment : Fragment(), CoroutineScope {
                                 (view?.context as MainActivity).fm?.beginTransaction()
                                     ?.replace(R.id.fragment_container, movieDetailFragment)
                                     ?.addToBackStack(null)?.commit()
-                                movieDetailFragment.getMovieDetail(movie.id)
+//                                movieDetailFragment.getMovieDetail(movie.id)
+                                movieDetailFragment.getMovieDetailCoroutine(movie.id)
                             }
 
                         }
