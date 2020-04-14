@@ -27,7 +27,6 @@
         android:layout_alignParentBottom="true"
         android:background="#FFF"
 
-        app:itemIconTint="@color/bnv_tab_item_foreground"
         app:itemTextColor="@color/bnv_tab_item_foreground"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_navigation" />
