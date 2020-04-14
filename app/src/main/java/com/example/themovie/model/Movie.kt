@@ -1,10 +1,10 @@
 package com.example.themovie.model
 
 import androidx.room.ColumnInfo
-import com.google.gson.annotations.SerializedName
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "movie_table")
 data class Movie(
@@ -22,7 +22,7 @@ data class Movie(
     @SerializedName("release_date")
     val releaseDate: String? = null,
     val favorite: Boolean? = null,
-    @ColumnInfo(name="ListData")
+    @ColumnInfo(name = "ListData")
     @TypeConverters(GenresConverter::class)
     val genres: List<Genre>? = null
 ) {

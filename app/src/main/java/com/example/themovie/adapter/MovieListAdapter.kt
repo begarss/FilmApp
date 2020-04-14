@@ -59,7 +59,9 @@ class MovieListAdapter(
 //                        movieDetailFragment.getMovieDetail(movie.id)
                         movieDetailFragment.getMovieDetailCoroutine(movie.id)
                     }
-                    (view.context as MainActivity).fm?.beginTransaction()?.replace(R.id.fragment_container,movieDetailFragment!!)?.addToBackStack(null)?.commit()
+                    (view.context as MainActivity).fm?.beginTransaction()
+                        ?.replace(R.id.fragment_container, movieDetailFragment!!)
+                        ?.addToBackStack(null)?.commit()
 //                    movieDetailFragment?.getMovieDetail(movie!!.id)
                     movieDetailFragment.getMovieDetailCoroutine(movie!!.id)
                 }
@@ -68,6 +70,7 @@ class MovieListAdapter(
         }
 
     }
+
     fun clearAll() {
         (moviesList as? ArrayList<Movie>)?.clear()
         notifyDataSetChanged()

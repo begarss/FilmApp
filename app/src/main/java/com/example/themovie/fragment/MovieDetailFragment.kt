@@ -18,7 +18,6 @@ import com.example.themovie.Fav.FavResponse
 import com.example.themovie.R
 import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService
-import com.example.themovie.model.Genre
 import com.example.themovie.model.Movie
 import com.example.themovie.model.MovieDao
 import com.example.themovie.model.MovieDatabase
@@ -31,7 +30,7 @@ import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 
-class MovieDetailFragment : Fragment(),CoroutineScope {
+class MovieDetailFragment : Fragment(), CoroutineScope {
 
     private val job = Job()
     private var movieTitle: TextView? = null
@@ -148,22 +147,19 @@ class MovieDetailFragment : Fragment(),CoroutineScope {
             val movie = withContext(Dispatchers.IO) {
                 try {
                     val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-                    val response = api?.getMovieDetailCoroutine(id, BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                    if(response!!.isSuccessful()){
+                    val response =
+                        api?.getMovieDetailCoroutine(id, BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                    if (response!!.isSuccessful()) {
                         val result = response.body()
-//                        if(result != null){
-//                            movieDao?.insert(result)
-//                        }
-                         result
-                    }
-                    else {
+                        result
+                    } else {
                         movieDao?.getMovie(id)
                     }
-                }catch(e: java.lang.Exception){
+                } catch (e: java.lang.Exception) {
                     movieDao?.getMovie(id)
                 }
             }
-            if (movie?.releaseDate != null){
+            if (movie?.releaseDate != null) {
                 val dateTime = initialFormat.parse(movie.releaseDate)
                 movieDate?.setText(dateFormat.format(dateTime))
                 movieYear?.setText(dateYearFormat.format(dateTime))
