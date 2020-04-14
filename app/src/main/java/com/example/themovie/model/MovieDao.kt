@@ -19,6 +19,4 @@ interface MovieDao {
     @Query("Select * from movie_table where id like :detail_id")
     fun getMovie(detail_id: Int): Movie
 
-//    @Query("Select ListData from movie_table")
-//    fun getGenres(): List<Genre>
 }

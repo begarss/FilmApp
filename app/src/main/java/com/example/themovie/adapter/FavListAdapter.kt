@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.themovie.activity.MainActivity
 import com.example.themovie.R
+import com.example.themovie.activity.MainActivity
 import com.example.themovie.fragment.MovieDetailFragment
 import com.example.themovie.model.Movie
 import java.text.SimpleDateFormat
@@ -48,7 +48,6 @@ class FavListAdapter(
             Glide.with(view.context)
                 .load(movie?.getPosterPath())
                 .into(poster)
-
 
             view.setOnClickListener {
                 if (view.context is MainActivity) {

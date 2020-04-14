@@ -17,9 +17,6 @@ interface MovieApi {
     @GET("movie/popular")
     fun getPopularMoviesList(@Query("api_key") apiKey: String, @Query("page") page: Int): Call<MovieResponse>
 
-//     @POST("authentication/token/validate_with_login")
-//     fun getRequestBody(@Query("api_key") apiKey: String): Call<RequestBody>
-
     @POST("authentication/token/validate_with_login?api_key=2f0d69a585b1ec8a833e56046239144b")
     fun login(@Body loginData: LoginData): Call<RequestToken>
 
@@ -42,7 +39,6 @@ interface MovieApi {
     @GET("movie/{movie_id}/account_states")
     fun getMovieState(@Path("movie_id") id: Int, @Query("api_key") apiKey: String?, @Query("session_id") session: String?): Call<Movie?>?
 
-    //coroutines
 
     @GET("movie/popular")
     suspend fun getPopularMoviesListCoroutine(@Query("api_key") apiKey: String, @Query("page") page: Int): Response<MovieResponse>

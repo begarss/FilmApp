@@ -14,8 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.themovie.BuildConfig
 import com.example.themovie.Fav.RequestSession
 import com.example.themovie.Fav.SessionId
-import com.example.themovie.activity.MainActivity
 import com.example.themovie.R
+import com.example.themovie.activity.MainActivity
 import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService
 import kotlinx.android.synthetic.main.login_activity.*
@@ -42,8 +42,7 @@ class LoginActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         progressBar.visibility = View.INVISIBLE
 
-        preferences =
-            getSharedPreferences("tkn", Context.MODE_PRIVATE)
+        preferences = getSharedPreferences("tkn", Context.MODE_PRIVATE)
         btnlogin.setOnClickListener {
             getToken()
             progressBar.visibility = View.VISIBLE
@@ -61,9 +60,9 @@ class LoginActivity : AppCompatActivity() {
             api?.getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
                 ?.enqueue(object : Callback<RequestToken> {
                     override fun onFailure(call: Call<RequestToken>, t: Throwable) {
-                        Toast.makeText(this@LoginActivity, "Error api ket", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@LoginActivity, "Error api ket", Toast.LENGTH_LONG)
+                            .show()
                     }
-
                     override fun onResponse(
                         call: Call<RequestToken>,
                         response: Response<RequestToken>
@@ -91,7 +90,6 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "Incorrect data", Toast.LENGTH_SHORT)
                             .show()
                     }
-
                     override fun onResponse(
                         call: Call<RequestToken>,
                         response: Response<RequestToken>
@@ -106,7 +104,6 @@ class LoginActivity : AppCompatActivity() {
                                 .show()
                         }
                     }
-
                 })
         } catch (e: Exception) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
@@ -126,13 +123,11 @@ class LoginActivity : AppCompatActivity() {
                     override fun onFailure(call: Call<RequestSession>, t: Throwable) {
                         Log.d("pusk", "failure occured")
                     }
-
                     override fun onResponse(
                         call: Call<RequestSession>,
                         response: Response<RequestSession>
                     ) {
                         if (response.body()?.success == true) {
-
                             Log.d("pusk", response.body()?.session_id)
                             val edt = preferences.edit()
                             edt.putString("sessionID", response.body()?.session_id)

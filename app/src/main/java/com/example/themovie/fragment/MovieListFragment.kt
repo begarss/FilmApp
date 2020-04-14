@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,14 +26,10 @@ import com.example.themovie.model.Movie
 import com.example.themovie.model.MovieDao
 import com.example.themovie.model.MovieDatabase
 import com.example.themovie.model.MovieResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlinx.coroutines.*
-
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -67,7 +62,6 @@ class MovieListFragment : Fragment(), CoroutineScope {
         preferences =
             requireActivity().getSharedPreferences("tkn", Context.MODE_PRIVATE)
         getMovieCoroutine()
-        getMovieList()
         swipeRefreshLayout.setOnRefreshListener {
             recyclerView.layoutManager = GridLayoutManager(activity, 1)
             recyclerView.itemAnimator = DefaultItemAnimator()
@@ -76,7 +70,6 @@ class MovieListFragment : Fragment(), CoroutineScope {
             movieListAdapter = MovieListAdapter(movies)
             movieListAdapter?.notifyDataSetChanged()
             getMovieCoroutine()
-            getMovieList()
         }
 
         return view
@@ -130,12 +123,10 @@ class MovieListFragment : Fragment(), CoroutineScope {
                                 (view?.context as MainActivity).fm?.beginTransaction()
                                     ?.replace(R.id.fragment_container, movieDetailFragment)
                                     ?.addToBackStack(null)?.commit()
-//                                movieDetailFragment.getMovieDetail(movie.id)
                                 movieDetailFragment.getMovieDetailCoroutine(movie.id)
                             }
 
                         }
-
                     }
                     swipeRefreshLayout.isRefreshing = false
                 }
@@ -187,7 +178,6 @@ class MovieListFragment : Fragment(), CoroutineScope {
                     (view?.context as MainActivity).fm?.beginTransaction()
                         ?.replace(R.id.fragment_container, movieDetailFragment)
                         ?.addToBackStack(null)?.commit()
-//                                movieDetailFragment.getMovieDetail(movie.id)
                     movieDetailFragment.getMovieDetailCoroutine(movie.id)
                 }
 
