@@ -1,9 +1,6 @@
 package com.example.themovie.api
 
-import com.example.themovie.Fav.FavMovieInfo
-import com.example.themovie.Fav.FavResponse
-import com.example.themovie.Fav.RequestSession
-import com.example.themovie.Fav.SessionId
+import com.example.themovie.Fav.*
 import com.example.themovie.authorization.LoginData
 import com.example.themovie.authorization.RequestToken
 import com.example.themovie.model.Movie
@@ -47,6 +44,6 @@ interface MovieApi {
     suspend fun getMovieDetailCoroutine(@Path("movie_id") id: Int, @Query("api_key") apiKey: String): Response<Movie>
 
     @GET("account/9178480/favorite/movies?api_key=2f0d69a585b1ec8a833e56046239144b")
-    suspend fun getFavListCoroutine(@Query("session_id") session: String?): Response<MovieResponse>
+    suspend fun getFavListCoroutine(@Query("session_id") session: String?): Response<FavMovieResponse>
 
 }

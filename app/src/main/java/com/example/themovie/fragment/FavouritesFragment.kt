@@ -16,10 +16,7 @@ import com.example.themovie.R
 import com.example.themovie.adapter.FavListAdapter
 import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService
-import com.example.themovie.model.Movie
-import com.example.themovie.model.MovieDao
-import com.example.themovie.model.MovieDatabase
-import com.example.themovie.model.MovieResponse
+import com.example.themovie.model.*
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,9 +29,9 @@ class FavouritesFragment : Fragment(), CoroutineScope {
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var movieListAdapter: FavListAdapter? = null
-    private var movies: ArrayList<Movie>? = null
+    private var movies: ArrayList<FavMovies>? = null
     var sessionId: String? = null
-    var movieDao: MovieDao? = null
+    var movieDao: FavDao? = null
     private val job = Job()
 
     override val coroutineContext: CoroutineContext
@@ -51,12 +48,12 @@ class FavouritesFragment : Fragment(), CoroutineScope {
         sessionId = pref.getString("sessionID", "empty")
         bindViews(view)
 
-        movieDao = MovieDatabase.getDatabase(view.context).movieDao()
+        movieDao = MovieDatabase.getDatabase(requireContext()).favDao()
         getFavListCoroutine(sessionId)
         swipeRefreshLayout.setOnRefreshListener {
             recyclerView.layoutManager = GridLayoutManager(activity, 1)
             recyclerView.itemAnimator = DefaultItemAnimator()
-            movies = ArrayList<Movie>()
+            movies = ArrayList<FavMovies>()
             movieListAdapter = FavListAdapter(movies)
             movieListAdapter?.notifyDataSetChanged()
             getFavListCoroutine(sessionId)
@@ -75,32 +72,32 @@ class FavouritesFragment : Fragment(), CoroutineScope {
         swipeRefreshLayout = view.findViewById(R.id.main_content)
     }
 
-    private fun getFavList(sessionId: String?) {
-
-        swipeRefreshLayout.isRefreshing = true
-        val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-        api?.getFavList(sessionId)
-            ?.enqueue(object : Callback<MovieResponse> {
-                override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                    Log.d("FavouritesFragment", "OnFailure")
-                }
-
-                override fun onResponse(
-                    call: Call<MovieResponse>,
-                    response: Response<MovieResponse>
-                ) {
-                    Log.d("FavouritesFragment", response.toString())
-                    if (response.isSuccessful()) {
-                        val movies = response.body()
-                        movieListAdapter?.moviesList = movies?.results
-                        movieListAdapter?.notifyDataSetChanged()
-                    }
-                    swipeRefreshLayout.isRefreshing = false
-
-                }
-
-            })
-    }
+    //    private fun getFavList(sessionId: String?) {
+//
+//        swipeRefreshLayout.isRefreshing = true
+//        val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
+//        api?.getFavList(sessionId)
+//            ?.enqueue(object : Callback<MovieResponse> {
+//                override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+//                    Log.d("FavouritesFragment", "OnFailure")
+//                }
+//
+//                override fun onResponse(
+//                    call: Call<MovieResponse>,
+//                    response: Response<MovieResponse>
+//                ) {
+//                    Log.d("FavouritesFragment", response.toString())
+//                    if (response.isSuccessful()) {
+//                        val movies = response.body()
+//                        movieListAdapter?.moviesList = movies?.results
+//                        movieListAdapter?.notifyDataSetChanged()
+//                    }
+//                    swipeRefreshLayout.isRefreshing = false
+//
+//                }
+//
+//            })
+//    }
     private fun getFavListCoroutine(sessionId: String?) {
         launch {
             swipeRefreshLayout.isRefreshing = true
@@ -108,22 +105,22 @@ class FavouritesFragment : Fragment(), CoroutineScope {
                 try {
                     val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
                     val response = api?.getFavListCoroutine(sessionId)
-                    if (response!!.isSuccessful()) {
+                    if (response?.isSuccessful!!) {
                         val result = response.body()
-                        if (!(result?.results.isNullOrEmpty())) {
-                            movieDao?.insertAll(result!!.results)
+                        if (!result?.results.isNullOrEmpty()) {
+                            movieDao?.insertFav(result!!.results)
                         }
-                        result!!.results
+                        result?.results
                     } else {
-                        movieDao?.getAll() ?: emptyList<Movie>()
+                        movieDao?.getFav() ?: emptyList<Movie>()
                     }
                 } catch (e: Exception) {
                     Log.e("Moviedatabase", e.toString())
-                    movieDao?.getAll() ?: emptyList<Movie>()
+                    movieDao?.getFav() ?: emptyList<Movie>()
                 }
 
             }
-            movieListAdapter?.moviesList = movies
+            movieListAdapter?.moviesList = movies as List<FavMovies>?
             movieListAdapter?.notifyDataSetChanged()
             swipeRefreshLayout.isRefreshing = false
         }

@@ -185,9 +185,12 @@ class MovieDetailFragment : Fragment(), CoroutineScope {
                         Toast.LENGTH_LONG
                     ).show()
                     markAsFav(FavMovieInfo(true, movieId, "movie"), sessionId)
+                    movie?.favorite=isLiked
                     likeBtn?.refreshDrawableState()
                 } else {
                     isLiked = false
+                    movie?.favorite=isLiked
+
                     likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                     markAsFav(FavMovieInfo(false, movieId, "movie"), sessionId)
                     likeBtn?.refreshDrawableState()

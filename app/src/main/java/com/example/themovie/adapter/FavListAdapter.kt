@@ -10,12 +10,12 @@ import com.bumptech.glide.Glide
 import com.example.themovie.R
 import com.example.themovie.activity.MainActivity
 import com.example.themovie.fragment.MovieDetailFragment
-import com.example.themovie.model.Movie
+import com.example.themovie.model.FavMovies
 import java.text.SimpleDateFormat
 import java.util.*
 
 class FavListAdapter(
-    var moviesList: List<Movie>? = null
+    var moviesList: List<FavMovies>? = null
 ) : RecyclerView.Adapter<FavListAdapter.MovieViewHolder>() {
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
@@ -34,7 +34,7 @@ class FavListAdapter(
     inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         var dateFormat = SimpleDateFormat("MMMM d, YYYY", Locale.ENGLISH)
         var initialFormat = SimpleDateFormat("YY-MM-DD", Locale.ENGLISH)
-        fun bind(movie: Movie?) {
+        fun bind(movie: FavMovies?) {
             val title = view.findViewById<TextView>(R.id.m_movie_title)
             val description = view.findViewById<TextView>(R.id.m_movie_overview)
             val date = view.findViewById<TextView>(R.id.m_movie_date)
