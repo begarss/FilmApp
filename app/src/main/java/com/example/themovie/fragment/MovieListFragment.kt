@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -60,7 +59,7 @@ class MovieListFragment : Fragment(), CoroutineScope {
 
         val view: View = LayoutInflater.from(container?.context)
             .inflate(R.layout.fragment_movie_list, container, false)
-        movieDao = MovieDatabase.getDatabase(view.context).movieDao()
+        movieDao = MovieDatabase.getDatabase(context = requireActivity()).movieDao()
 
         bindViews(view)
         preferences =
@@ -156,10 +155,10 @@ class MovieListFragment : Fragment(), CoroutineScope {
                     val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
                     val response =
                         api?.getPopularMoviesListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, 1)
-                    if (response?.isSuccessful()!!) {
+                    if (response?.isSuccessful!!) {
                         val result = response.body()
-                        if (result?.results.isNullOrEmpty()) {
-                            movieDao?.insertAll(result!!.results)
+                        if (!result?.results.isNullOrEmpty()) {
+                            movieDao?.insertAll(result?.results!!)
                         }
                         result!!.results
                     } else {
