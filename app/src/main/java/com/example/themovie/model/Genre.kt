@@ -1,10 +1,9 @@
 package com.example.themovie.model
 
 import androidx.room.ColumnInfo
+import com.google.gson.annotations.SerializedName
 
 data class Genre(
-    @ColumnInfo(name = "genre_id")
-    val id: Int,
-    @ColumnInfo(name = "genre_name")
-    val name: String
+    @SerializedName ("id")val id: Int,
+    @SerializedName ("name")val name: String
 )

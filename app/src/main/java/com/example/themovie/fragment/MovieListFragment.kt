@@ -160,7 +160,7 @@ class MovieListFragment : Fragment(), CoroutineScope {
                         api?.getPopularMoviesListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, 1)
                     if (response?.isSuccessful()!!) {
                         val result = response.body()
-                        if (result?.results.isNullOrEmpty()) {
+                        if (!(result?.results.isNullOrEmpty())) {
                             movieDao?.insertAll(result!!.results)
                         }
                         result!!.results
@@ -171,6 +171,26 @@ class MovieListFragment : Fragment(), CoroutineScope {
                     Log.e("Moviedatabase", e.toString())
                     movieDao?.getAll() ?: emptyList<Movie>()
                 }
+            }
+            movie = list.first()
+            bigDate?.text = movie.releaseDate
+            bigTitle?.text = movie.originalTitle
+            bigIm.visibility = View.VISIBLE
+            bigTitle?.visibility = View.VISIBLE
+            bigDate?.visibility = View.VISIBLE
+            Glide.with(this@MovieListFragment)
+                .load(movie.getPosterPath())
+                .into(this@MovieListFragment.bigIm)
+            bigIm.setOnClickListener {
+                if (view?.context is MainActivity) {
+                    val movieDetailFragment = MovieDetailFragment()
+                    (view?.context as MainActivity).fm?.beginTransaction()
+                        ?.replace(R.id.fragment_container, movieDetailFragment)
+                        ?.addToBackStack(null)?.commit()
+//                                movieDetailFragment.getMovieDetail(movie.id)
+                    movieDetailFragment.getMovieDetailCoroutine(movie.id)
+                }
+
             }
             movieListAdapter?.moviesList = list
             movieListAdapter?.notifyDataSetChanged()

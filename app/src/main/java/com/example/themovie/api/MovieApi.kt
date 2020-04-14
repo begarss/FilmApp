@@ -52,4 +52,5 @@ interface MovieApi {
 
     @GET("account/9178480/favorite/movies?api_key=2f0d69a585b1ec8a833e56046239144b")
     suspend fun getFavListCoroutine(@Query("session_id") session: String?): Response<MovieResponse>
+
 }
