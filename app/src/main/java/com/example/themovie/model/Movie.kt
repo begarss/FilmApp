@@ -17,17 +17,12 @@ data class Movie(
     val poster_path: String? = null,
     @SerializedName("original_title")
     val originalTitle: String? = null,
-//    @SerializedName("genre_ids")
-//    val genreIds: List<Int>? = null,
     @SerializedName("overview")
     val overview: String? = null,
     @SerializedName("release_date")
     val releaseDate: String? = null,
-//    @SerializedName("genres")
-//    val genres: List<Genre>? = null,
-
     val favorite: Boolean? = null,
-    @ColumnInfo(name = "ListData")
+    @ColumnInfo(name="ListData")
     @TypeConverters(GenresConverter::class)
     val genres: List<Genre>? = null
 ) {

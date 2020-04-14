@@ -50,6 +50,7 @@ class MovieListFragment : Fragment(), CoroutineScope {
     private lateinit var movie: Movie
     val job = Job()
     var movieDao: MovieDao? = null
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -59,7 +60,7 @@ class MovieListFragment : Fragment(), CoroutineScope {
 
         val view: View = LayoutInflater.from(container?.context)
             .inflate(R.layout.fragment_movie_list, container, false)
-        movieDao = MovieDatabase.getDatabase(context = requireActivity()).movieDao()
+        movieDao = MovieDatabase.getDatabase(view.context).movieDao()
 
         bindViews(view)
         preferences =
@@ -128,7 +129,8 @@ class MovieListFragment : Fragment(), CoroutineScope {
                                 (view?.context as MainActivity).fm?.beginTransaction()
                                     ?.replace(R.id.fragment_container, movieDetailFragment)
                                     ?.addToBackStack(null)?.commit()
-                                movieDetailFragment.getMovieDetail(movie.id)
+//                                movieDetailFragment.getMovieDetail(movie.id)
+                                movieDetailFragment.getMovieDetailCoroutine(movie.id)
                             }
 
                         }
@@ -157,8 +159,8 @@ class MovieListFragment : Fragment(), CoroutineScope {
                         api?.getPopularMoviesListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, 1)
                     if (response?.isSuccessful!!) {
                         val result = response.body()
-                        if (!result?.results.isNullOrEmpty()) {
-                            movieDao?.insertAll(result?.results!!)
+                        if (!(result?.results.isNullOrEmpty())) {
+                            movieDao?.insertAll(result!!.results)
                         }
                         result!!.results
                     } else {
@@ -168,6 +170,26 @@ class MovieListFragment : Fragment(), CoroutineScope {
                     Log.e("Moviedatabase", e.toString())
                     movieDao?.getAll() ?: emptyList<Movie>()
                 }
+            }
+            movie = list.first()
+            bigDate?.text = movie.releaseDate
+            bigTitle?.text = movie.originalTitle
+            bigIm.visibility = View.VISIBLE
+            bigTitle?.visibility = View.VISIBLE
+            bigDate?.visibility = View.VISIBLE
+            Glide.with(this@MovieListFragment)
+                .load(movie.getPosterPath())
+                .into(this@MovieListFragment.bigIm)
+            bigIm.setOnClickListener {
+                if (view?.context is MainActivity) {
+                    val movieDetailFragment = MovieDetailFragment()
+                    (view?.context as MainActivity).fm?.beginTransaction()
+                        ?.replace(R.id.fragment_container, movieDetailFragment)
+                        ?.addToBackStack(null)?.commit()
+//                                movieDetailFragment.getMovieDetail(movie.id)
+                    movieDetailFragment.getMovieDetailCoroutine(movie.id)
+                }
+
             }
             movieListAdapter?.moviesList = list
             movieListAdapter?.notifyDataSetChanged()
