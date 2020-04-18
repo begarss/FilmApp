@@ -47,6 +47,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "androidx.preference:preference:1.1.0"
+
     //adding view model
     implementation "android.arch.lifecycle:extensions:$view_model_version"
     implementation "android.arch.lifecycle:viewmodel:$view_model_version"
