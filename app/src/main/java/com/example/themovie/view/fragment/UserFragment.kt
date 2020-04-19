@@ -1,4 +1,4 @@
-package com.example.themovie.fragment
+package com.example.themovie.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,9 +9,8 @@ import android.view.ViewGroup
 import android.widget.Button
 
 import com.example.themovie.R
-import com.example.themovie.activity.MainActivity
-import com.example.themovie.authorization.LoginActivity
-import com.example.themovie.authorization.LoginSharedPref
+import com.example.themovie.model.authorization.LoginActivity
+import com.example.themovie.model.authorization.LoginSharedPref
 
 class UserFragment : Fragment() {
     private lateinit var logOut:Button

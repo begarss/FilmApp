@@ -1,8 +1,8 @@
-package com.example.themovie.api
+package com.example.themovie.model.api
 
-import com.example.themovie.Fav.*
-import com.example.themovie.authorization.LoginData
-import com.example.themovie.authorization.RequestToken
+import com.example.themovie.model.Fav.*
+import com.example.themovie.model.authorization.LoginData
+import com.example.themovie.model.authorization.RequestToken
 import com.example.themovie.model.Movie
 import com.example.themovie.model.MovieResponse
 import retrofit2.Call
@@ -34,7 +34,7 @@ interface MovieApi {
     fun getFavList(@Query("session_id") session: String?): Call<MovieResponse>
 
     @GET("movie/{movie_id}/account_states")
-    fun getMovieState(@Path("movie_id") id: Int, @Query("api_key") apiKey: String?, @Query("session_id") session: String?): Call<Movie?>?
+    fun getMovieState(@Path("movie_id") id: Int, @Query("api_key") apiKey: String?, @Query("session_id") session: String?): Call<Movie>
 
 
     @GET("movie/popular")

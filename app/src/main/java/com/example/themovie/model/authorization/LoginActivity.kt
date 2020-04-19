@@ -1,4 +1,4 @@
-package com.example.themovie.authorization
+package com.example.themovie.model.authorization
 
 import android.content.Context
 import android.content.Intent
@@ -12,12 +12,12 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.themovie.BuildConfig
-import com.example.themovie.Fav.RequestSession
-import com.example.themovie.Fav.SessionId
-import com.example.themovie.activity.MainActivity
+import com.example.themovie.model.Fav.RequestSession
+import com.example.themovie.model.Fav.SessionId
+import com.example.themovie.view.activity.MainActivity
 import com.example.themovie.R
-import com.example.themovie.api.MovieApi
-import com.example.themovie.api.RetrofitService
+import com.example.themovie.model.api.MovieApi
+import com.example.themovie.model.api.RetrofitService
 import kotlinx.android.synthetic.main.login_activity.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -67,7 +67,8 @@ class LoginActivity : AppCompatActivity() {
                 return
             }
             val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-            api?.getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            api?.
+                getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
                 ?.enqueue(object : Callback<RequestToken> {
                     override fun onFailure(call: Call<RequestToken>, t: Throwable) {
                         Toast.makeText(this@LoginActivity, "Error api ket", Toast.LENGTH_LONG).show()

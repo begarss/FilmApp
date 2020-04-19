@@ -21,6 +21,7 @@ data class Movie(
     val overview: String? = null,
     @SerializedName("release_date")
     val releaseDate: String? = null,
+    @SerializedName("favorite")
     var favorite: Boolean? = null,
     @ColumnInfo(name = "ListData")
     @TypeConverters(GenresConverter::class)

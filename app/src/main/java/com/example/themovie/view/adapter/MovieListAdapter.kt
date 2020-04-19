@@ -1,4 +1,4 @@
-package com.example.themovie.adapter
+package com.example.themovie.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,15 +8,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.themovie.R
-import com.example.themovie.activity.MainActivity
-import com.example.themovie.fragment.MovieDetailFragment
-import com.example.themovie.model.FavMovies
+import com.example.themovie.view.activity.MainActivity
+import com.example.themovie.view.fragment.MovieDetailFragment
+import com.example.themovie.model.Movie
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FavListAdapter(
-    var moviesList: List<FavMovies>? = null
-) : RecyclerView.Adapter<FavListAdapter.MovieViewHolder>() {
+
+class MovieListAdapter(
+    var moviesList: List<Movie>? = null
+) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_list_row, p0, false)
@@ -34,7 +35,7 @@ class FavListAdapter(
     inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         var dateFormat = SimpleDateFormat("MMMM d, YYYY", Locale.ENGLISH)
         var initialFormat = SimpleDateFormat("YY-MM-DD", Locale.ENGLISH)
-        fun bind(movie: FavMovies?) {
+        fun bind(movie: Movie?) {
             val title = view.findViewById<TextView>(R.id.m_movie_title)
             val description = view.findViewById<TextView>(R.id.m_movie_overview)
             val date = view.findViewById<TextView>(R.id.m_movie_date)
@@ -48,7 +49,6 @@ class FavListAdapter(
             Glide.with(view.context)
                 .load(movie?.getPosterPath())
                 .into(poster)
-
             view.setOnClickListener {
                 if (view.context is MainActivity) {
                     val movieDetailFragment = MovieDetailFragment()
@@ -57,12 +57,24 @@ class FavListAdapter(
                         ?.addToBackStack(null)?.commit()
                     if (movie != null) {
 //                        movieDetailFragment.getMovieDetail(movie.id)
-                        movieDetailFragment.getMovieDetailCoroutine(movie.id)
+//                        movieDetailFragment.getMovieDetailCoroutine(movie.id)
+                        movieDetailFragment.movieId=movie.id
                     }
+//                    (view.context as MainActivity).fm?.beginTransaction()
+//                        ?.replace(R.id.fragment_container, movieDetailFragment!!)
+//                        ?.addToBackStack(null)?.commit()
+////                    movieDetailFragment?.getMovieDetail(movie!!.id)
+//                    movieDetailFragment.getMovieDetailCoroutine(movie!!.id)
                 }
 
             }
+
         }
 
+    }
+
+    fun clearAll() {
+        (moviesList as? ArrayList<Movie>)?.clear()
+        notifyDataSetChanged()
     }
 }

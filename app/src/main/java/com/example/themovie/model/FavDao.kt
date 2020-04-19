@@ -10,7 +10,7 @@ interface FavDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFav(list: List<FavMovies>)
+    fun insertFav(list: List<FavMovies>?)
 
 
     @Query("Select * from fav_movie_table ")
