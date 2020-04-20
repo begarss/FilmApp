@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.themovie.BuildConfig
 import com.example.themovie.model.Fav.RequestSession
 import com.example.themovie.model.Fav.SessionId
@@ -18,6 +19,9 @@ import com.example.themovie.view.activity.MainActivity
 import com.example.themovie.R
 import com.example.themovie.model.api.MovieApi
 import com.example.themovie.model.api.RetrofitService
+import com.example.themovie.view_model.LoginViewModel
+import com.example.themovie.view_model.MoviesListViewModel
+import com.example.themovie.view_model.ViewModelProviderFactory
 import kotlinx.android.synthetic.main.login_activity.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,22 +35,22 @@ class LoginActivity : AppCompatActivity() {
     lateinit var preferences: SharedPreferences
     private lateinit var progressBar: ProgressBar
     var requestedToken: String? = null
+    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
-
+        val viewModelProviderFactory = ViewModelProviderFactory(this)
+        loginViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(LoginViewModel::class.java)
         email = findViewById(R.id.tv_login)
         password = findViewById(R.id.tv_psw)
         btnlogin = findViewById(R.id.b_login)
         progressBar = findViewById(R.id.progressBar)
         progressBar.visibility = View.INVISIBLE
-        if(LoginSharedPref().getUserName(this)?.length == 0)
-        {
+        if (LoginSharedPref().getUserName(this)?.length == 0) {
             // call Login Activity
-        }
-        else
-        {
+        } else {
             val intent = Intent(this@LoginActivity, MainActivity::class.java)
             startActivity(intent)
 
@@ -54,112 +58,43 @@ class LoginActivity : AppCompatActivity() {
         preferences =
             getSharedPreferences("tkn", Context.MODE_PRIVATE)
         btnlogin.setOnClickListener {
-            getToken()
-            progressBar.visibility = View.VISIBLE
-        }
-
-
-    }
-
-    fun getToken() {
-        try {
-            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
-            }
-            val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-            api?.
-                getRequestToken(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                ?.enqueue(object : Callback<RequestToken> {
-                    override fun onFailure(call: Call<RequestToken>, t: Throwable) {
-                        Toast.makeText(this@LoginActivity, "Error api ket", Toast.LENGTH_LONG).show()
-                    }
-
-                    override fun onResponse(
-                        call: Call<RequestToken>,
-                        response: Response<RequestToken>
-                    ) {
-                        if (response.body()?.success == true) {
-                            requestedToken = response.body()?.requestToken
-                            login()
+            loginViewModel.getTkn()
+            loginViewModel.liveData.observe(
+                this,
+                androidx.lifecycle.Observer { result ->
+                    when (result) {
+                        is LoginViewModel.State.ShowLoading -> {
+                            progressBar.visibility = View.VISIBLE
                         }
-                    }
-                })
-        } catch (e: Exception) {
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    fun login() {
-        try {
-            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
-            }
-            val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-            api?.login(LoginData(email.text.toString(), tv_psw.text.toString(), requestedToken))
-                ?.enqueue(object : Callback<RequestToken> {
-                    override fun onFailure(call: Call<RequestToken>, t: Throwable) {
-                        Toast.makeText(this@LoginActivity, "Incorrect data", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-
-                    override fun onResponse(
-                        call: Call<RequestToken>,
-                        response: Response<RequestToken>
-                    ) {
-                        if (response.body()?.success == true) {
-                            Log.d("login", "good")
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            getSessionId(requestedToken)
-                            startActivity(intent)
-//                            val loginSave = LoginSharedPref()
-                            LoginSharedPref().setUserName(this@LoginActivity,email.text.toString())
+                        is LoginViewModel.State.HideLoading -> {
                             progressBar.visibility = View.GONE
-                            Toast.makeText(this@LoginActivity, "Accessed ", Toast.LENGTH_LONG)
-                                .show()
+                        }
+                        is LoginViewModel.State.startLogin -> {
+                            loginViewModel.login2(
+                                email = email.text.toString(),
+                                password = password.text.toString(),
+                                requestedToken = result.token
+                            )
+                        }
+                        is LoginViewModel.State.showActivity -> {
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                        }
+                        is LoginViewModel.State.saveUser -> {
+                            LoginSharedPref().setUserName(this@LoginActivity, email.text.toString())
+
+                        }
+                        is LoginViewModel.State.GetSession -> {
+                            loginViewModel.getSessionId(result.token)
+                        }
+                        is LoginViewModel.State.saveSession -> {
+                            val edt = preferences.edit()
+                            edt.putString("sessionID", result.sessionId)
+                            edt.apply()
                         }
                     }
-
                 })
-        } catch (e: Exception) {
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
-
         }
     }
-
-    fun getSessionId(token: String?) {
-        Log.d("pusk", token)
-        try {
-            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
-            }
-            val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
-            api?.getSession(SessionId(token))
-                ?.enqueue(object : Callback<RequestSession> {
-                    override fun onFailure(call: Call<RequestSession>, t: Throwable) {
-                        Log.d("pusk", "failure occured")
-                    }
-
-                    override fun onResponse(
-                        call: Call<RequestSession>,
-                        response: Response<RequestSession>
-                    ) {
-                        if (response.body()?.success == true) {
-
-                            Log.d("pusk", response.body()?.session_id)
-                            val edt = preferences.edit()
-                            edt.putString("sessionID", response.body()?.session_id)
-                            edt.apply()
-
-                        } else
-                            Log.d("pusk", response.body().toString())
-
-                    }
-
-                })
-        } catch (e: Exception) {
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
-
-        }
-    }
-
 }
+

@@ -16,12 +16,15 @@ interface MovieApi {
 
     @POST("authentication/token/validate_with_login?api_key=2f0d69a585b1ec8a833e56046239144b")
     fun login(@Body loginData: LoginData): Call<RequestToken>
-
+    @POST("authentication/token/validate_with_login?api_key=2f0d69a585b1ec8a833e56046239144b")
+    suspend fun login2(@Body loginData: LoginData): Response<RequestToken>
     @POST("authentication/session/new?api_key=2f0d69a585b1ec8a833e56046239144b")
     fun getSession(@Body sessionId: SessionId): Call<RequestSession>
 
     @GET("authentication/token/new")
     fun getRequestToken(@Query("api_key") apiKey: String): Call<RequestToken>
+    @GET("authentication/token/new")
+    suspend fun getRequestToken2(@Query("api_key") apiKey: String): Response<RequestToken>
 
     @GET("movie/{movie_id}")
     fun getMovieDetail(@Path("movie_id") id: Int, @Query("api_key") apiKey: String): Call<Movie>
