@@ -3,7 +3,6 @@ package com.example.themovie.model
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.util.Collections.emptyList
 
 
 class GenresConverter {
@@ -22,4 +21,16 @@ class GenresConverter {
     fun ListToString(someObjects: List<Genre?>?): String? {
         return gson.toJson(someObjects)
     }
+
+//    @TypeConverter
+//    fun toTorrent(json: String?): List<Genre?>? {
+//        val type = object : TypeToken<List<Genre?>?>() {}.type
+//        return Gson().fromJson(json, type)
+//    }
+//
+//    @TypeConverter
+//    fun toJson(torrent: List<Genre>): String {
+//        val type = object : TypeToken<List<Genre>>() {}.type
+//        return Gson().toJson(torrent, type)
+//    }
 }

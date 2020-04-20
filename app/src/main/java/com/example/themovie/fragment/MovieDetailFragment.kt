@@ -19,14 +19,20 @@ import com.example.themovie.R
 import com.example.themovie.api.MovieApi
 import com.example.themovie.api.RetrofitService
 import com.example.themovie.model.Movie
+import com.example.themovie.model.MovieDao
+import com.example.themovie.model.MovieDatabase
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
-class MovieDetailFragment : Fragment() {
+class MovieDetailFragment : Fragment(), CoroutineScope {
+
+    private val job = Job()
     private var movieTitle: TextView? = null
     private var movieJanre: TextView? = null
     private var movieDate: TextView? = null
@@ -39,6 +45,10 @@ class MovieDetailFragment : Fragment() {
     private var backBtn: ImageButton? = null
     var sessionId: String? = null
     private var movie: Movie? = null
+    var movieDao: MovieDao? = null
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     companion object {
         fun newInstance(movie: Movie?): MovieDetailFragment? {
@@ -47,6 +57,10 @@ class MovieDetailFragment : Fragment() {
             return fragment
         }
     }
+
+    val dateFormat = SimpleDateFormat("MMMM d, YYYY H:m", Locale.ENGLISH)
+    val dateYearFormat = SimpleDateFormat("YYYY", Locale.ENGLISH)
+    val initialFormat = SimpleDateFormat("YY-MM-DD", Locale.ENGLISH)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +73,9 @@ class MovieDetailFragment : Fragment() {
         val pref =
             requireActivity().getSharedPreferences("tkn", Context.MODE_PRIVATE)
         sessionId = pref.getString("sessionID", "empty")
+
+        movieDao = MovieDatabase.getDatabase(v.context).movieDao()
+
         return v
     }
 
@@ -123,6 +140,64 @@ class MovieDetailFragment : Fragment() {
 
                 override fun onFailure(call: Call<Movie>, t: Throwable) {}
             })
+    }
+
+    fun getMovieDetailCoroutine(id: Int) {
+        launch {
+            val movie = withContext(Dispatchers.IO) {
+                try {
+                    val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
+                    val response =
+                        api?.getMovieDetailCoroutine(id, BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                    if (response!!.isSuccessful()) {
+                        val result = response.body()
+                        result
+                    } else {
+                        movieDao?.getMovie(id)
+                    }
+                } catch (e: java.lang.Exception) {
+                    movieDao?.getMovie(id)
+                }
+            }
+            if (movie?.releaseDate != null) {
+                val dateTime = initialFormat.parse(movie.releaseDate)
+                movieDate?.setText(dateFormat.format(dateTime))
+                movieYear?.setText(dateYearFormat.format(dateTime))
+            } else {
+                movieDate?.setText(dateFormat.format(Date()))
+                movieYear?.setText(dateYearFormat.format(Date()))
+            }
+            movieTitle?.setText(movie?.originalTitle)
+            movieDescription?.setText(movie?.overview)
+            movieJanre?.setText("Action")
+            Glide.with(this@MovieDetailFragment)
+                .load(movie?.getPosterPath())
+                .into(this@MovieDetailFragment.poster)
+            movieId = movie?.id
+            isLiked = getState(movieId)
+            likeBtn?.setOnClickListener(View.OnClickListener {
+                if (isLiked == false) {
+                    isLiked = true
+                    likeBtn?.setImageResource(R.drawable.ic_favorite_black_24dp)
+                    Toast.makeText(
+                        activity,
+                        "Film added to favList",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    markAsFav(FavMovieInfo(true, movieId, "movie"), sessionId)
+                    movie?.favorite=isLiked
+                    likeBtn?.refreshDrawableState()
+                } else {
+                    isLiked = false
+                    movie?.favorite=isLiked
+
+                    likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+                    markAsFav(FavMovieInfo(false, movieId, "movie"), sessionId)
+                    likeBtn?.refreshDrawableState()
+
+                }
+            })
+        }
     }
 
 

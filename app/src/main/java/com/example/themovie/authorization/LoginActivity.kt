@@ -41,7 +41,16 @@ class LoginActivity : AppCompatActivity() {
         btnlogin = findViewById(R.id.b_login)
         progressBar = findViewById(R.id.progressBar)
         progressBar.visibility = View.INVISIBLE
+        if(LoginSharedPref().getUserName(this)?.length == 0)
+        {
+            // call Login Activity
+        }
+        else
+        {
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            startActivity(intent)
 
+        }
         preferences =
             getSharedPreferences("tkn", Context.MODE_PRIVATE)
         btnlogin.setOnClickListener {
@@ -101,6 +110,8 @@ class LoginActivity : AppCompatActivity() {
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             getSessionId(requestedToken)
                             startActivity(intent)
+//                            val loginSave = LoginSharedPref()
+                            LoginSharedPref().setUserName(this@LoginActivity,email.text.toString())
                             progressBar.visibility = View.GONE
                             Toast.makeText(this@LoginActivity, "Accessed ", Toast.LENGTH_LONG)
                                 .show()

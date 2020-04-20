@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "movie_table")
-data class Movie(
+@Entity(tableName = "fav_movie_table")
+data class FavMovies(
     @PrimaryKey
     @SerializedName("id")
     val id: Int,
