@@ -58,7 +58,7 @@ class MoviesListViewModel(
                         val list = response?.body()?.results ?: emptyList()
                         val totalPage = response?.body()?.totalPages ?: 0
                         if (!result?.results.isNullOrEmpty()) {
-                            movieDao.insertAll(result?.results!!)
+                            movieDao.insertAll(result?.results?.subList(1,19)!!)
                         }
 
 

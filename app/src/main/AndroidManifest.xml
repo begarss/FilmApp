@@ -28,8 +28,9 @@
         <activity android:name="com.example.themovie.view.activity.MainActivity"
             android:launchMode="singleTop"/>
         <activity android:name="com.example.themovie.model.authorization.LoginActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-        
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:noHistory="true"/>
+
     </application>
 
 </manifest>
