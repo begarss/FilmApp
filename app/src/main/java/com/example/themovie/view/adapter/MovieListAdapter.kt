@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.themovie.R
@@ -17,35 +18,114 @@ import java.util.*
 
 class MovieListAdapter(
     var moviesList: List<Movie>? = null
-) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val VIEW_TYPE_LOADING = 0
+    private val VIEW_TYPE_NORMAL = 1
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
-        val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_list_row, p0, false)
-        return MovieViewHolder(view)
+    private var isLoaderVisible = false
+
+    private val movies = ArrayList<Movie>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType) {
+            VIEW_TYPE_NORMAL -> MovieViewHolder(
+                inflater.inflate(R.layout.movie_list_row, parent, false)
+            )
+            VIEW_TYPE_LOADING -> ProgressViewHolder(
+                inflater.inflate(R.layout.layout_progress, parent, false)
+            )
+            else -> throw Throwable("invalid view")
+        }
+    }
+
+    //    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
+//        val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_list_row, p0, false)
+//        return MovieViewHolder(view)
+//    }
+    override fun getItemViewType(position: Int): Int {
+        return if (isLoaderVisible) {
+            if (position == movies.size - 1) {
+                VIEW_TYPE_LOADING
+            } else {
+                VIEW_TYPE_NORMAL
+            }
+        } else {
+            VIEW_TYPE_NORMAL
+        }
     }
 
     override fun getItemCount(): Int {
-        return moviesList?.size ?: 0
+        return movies.size
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.bind(moviesList?.get(position))
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is MovieViewHolder) {
+            holder.bind(movies[position])
+        }
+    }
+
+    fun addItems(list: List<Movie>) {
+        movies.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun setNewItems(list: List<Movie>) {
+        movies.clear()
+        addItems(list)
+        isLoaderVisible = false
+    }
+
+    fun addLoading() {
+        isLoaderVisible = true
+        movies.add(Movie(id = -1))
+        notifyItemInserted(movies.size - 1)
+    }
+
+    fun removeLoading() {
+        isLoaderVisible = false
+        val position = movies.size - 1
+        if (movies.isNotEmpty()) {
+            val item = getItem(position)
+            if (item != null) {
+                movies.removeAt(position)
+                notifyItemRemoved(position)
+            }
+        }
+    }
+
+    fun getItem(position: Int): Movie? {
+        return movies[position]
+    }
+
+    fun clearAll() {
+        movies.clear()
+        notifyDataSetChanged()
     }
 
     inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         var dateFormat = SimpleDateFormat("MMMM d, YYYY", Locale.ENGLISH)
         var initialFormat = SimpleDateFormat("YY-MM-DD", Locale.ENGLISH)
+        private val title: TextView
+        private val description: TextView
+        private val date: TextView
+        private val commentsCount: TextView
+        private val poster: ImageView
+
+        init {
+            title = view.findViewById(R.id.m_movie_title)
+            description = view.findViewById(R.id.m_movie_overview)
+            date = view.findViewById(R.id.m_movie_date)
+            commentsCount = view.findViewById(R.id.m_movie_cnt)
+            poster = view.findViewById(R.id.m_movie_poster)
+        }
+
         fun bind(movie: Movie?) {
-            val title = view.findViewById<TextView>(R.id.m_movie_title)
-            val description = view.findViewById<TextView>(R.id.m_movie_overview)
-            val date = view.findViewById<TextView>(R.id.m_movie_date)
-            val commentsCount = view.findViewById<TextView>(R.id.m_movie_cnt)
-            val poster = view.findViewById<ImageView>(R.id.m_movie_poster)
             title.text = movie?.originalTitle
             commentsCount.text = movie?.voteCount.toString()
             description.text = movie?.overview
-            val dateTime = initialFormat.parse(movie?.releaseDate)
-            date.text = dateFormat.format(dateTime)
+//            val dateTime = initialFormat.parse(movie?.releaseDate)
+            date.text = movie?.releaseDate
             Glide.with(view.context)
                 .load(movie?.getPosterPath())
                 .into(poster)
@@ -58,13 +138,9 @@ class MovieListAdapter(
                     if (movie != null) {
 //                        movieDetailFragment.getMovieDetail(movie.id)
 //                        movieDetailFragment.getMovieDetailCoroutine(movie.id)
-                        movieDetailFragment.movieId=movie.id
+                        movieDetailFragment.movieId = movie.id
                     }
-//                    (view.context as MainActivity).fm?.beginTransaction()
-//                        ?.replace(R.id.fragment_container, movieDetailFragment!!)
-//                        ?.addToBackStack(null)?.commit()
-////                    movieDetailFragment?.getMovieDetail(movie!!.id)
-//                    movieDetailFragment.getMovieDetailCoroutine(movie!!.id)
+//
                 }
 
             }
@@ -73,8 +149,10 @@ class MovieListAdapter(
 
     }
 
-    fun clearAll() {
-        (moviesList as? ArrayList<Movie>)?.clear()
-        notifyDataSetChanged()
+    inner class ProgressViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
+//    fun clearAll() {
+//        (moviesList as? ArrayList<Movie>)?.clear()
+//        notifyDataSetChanged()
+//    }
 }

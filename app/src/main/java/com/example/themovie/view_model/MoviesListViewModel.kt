@@ -18,11 +18,12 @@ import kotlin.coroutines.CoroutineContext
 
 class MoviesListViewModel(
     private val context: Context
+
 ) : ViewModel(), CoroutineScope {
     private val job = Job()
     private val movieDao: MovieDao
     private val favDao: FavDao
-    var isLiked:Boolean = false
+    var isLiked: Boolean = false
 
     val liveData = MutableLiveData<State>()
 
@@ -30,6 +31,7 @@ class MoviesListViewModel(
     init {
         movieDao = MovieDatabase.getDatabase(context).movieDao()
         favDao = MovieDatabase.getDatabase(context).favDao()
+        getMovies()
     }
 
     override val coroutineContext: CoroutineContext
@@ -40,30 +42,48 @@ class MoviesListViewModel(
         job.cancel()
     }
 
-    fun getMovies() {
+    fun getMovies(page: Int = 1) {
         launch {
-            liveData.value = State.ShowLoading
+            if (page == 1) {
+                liveData.value =
+                    State.ShowLoading
+            }
             val list = withContext(Dispatchers.IO) {
                 try {
                     val api: MovieApi? = RetrofitService.getClient()?.create(MovieApi::class.java)
                     val response =
-                        api?.getPopularMoviesListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, 1)
+                        api?.getPopularMoviesListCoroutine(BuildConfig.THE_MOVIE_DB_API_TOKEN, page)
                     if (response?.isSuccessful!!) {
                         val result = response.body()
+                        val list = response?.body()?.results ?: emptyList()
+                        val totalPage = response?.body()?.totalPages ?: 0
                         if (!result?.results.isNullOrEmpty()) {
                             movieDao.insertAll(result?.results!!)
                         }
-                        result?.results
+
+
+                        Pair(totalPage, list)
                     } else {
-                        movieDao.getAll() ?: emptyList<Movie>()
+                        Pair(
+                            1, movieDao.getAll() ?: emptyList<Movie>()
+                        )
+
                     }
                 } catch (e: Exception) {
                     Log.e("Moviedatabase", e.toString())
-                    movieDao.getAll() ?: emptyList<Movie>()
+                    Pair(
+                        1, movieDao.getAll() ?: emptyList<Movie>()
+                    )
                 }
             }
+
+            liveData.postValue(
+                State.Result(
+                    totalPage = list.first,
+                    list = list.second
+                )
+            )
             liveData.value = State.HideLoading
-            liveData.value = State.Result(list)
         }
     }
 
@@ -87,7 +107,6 @@ class MoviesListViewModel(
                     Log.e("Moviedatabase", e.toString())
                     favDao?.getFav() ?: emptyList<Movie>()
                 }
-
             }
             liveData.value = State.HideLoading
             liveData.value = State.FavResult(list as List<FavMovies>?)
@@ -112,7 +131,6 @@ class MoviesListViewModel(
                 }
             }
             liveData.value = State.MovieDetails(movie)
-
         }
     }
 
@@ -133,9 +151,7 @@ class MoviesListViewModel(
                         response: Response<FavResponse>
                     ) {
                         Log.d("pusk", response.toString())
-
                     }
-
                 })
         } catch (e: Exception) {
             Log.d("mark", e.toString())
@@ -155,32 +171,24 @@ class MoviesListViewModel(
                         override fun onResponse(call: Call<Movie?>, response: Response<Movie?>) {
                             Log.d("pusk", response.toString())
                             if (response.body()?.id == movieId)
-//                                isLiked = response.body()?.favorite
-//                            if (isLiked == true) {
-//                                likeBtn?.setImageResource(R.drawable.ic_favorite_black_24dp)
-//
-//                            } else
-//                                likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
-                                 this@MoviesListViewModel.isLiked = response.body()?.favorite!!
-                                liveData.value=State.liked(response?.body()?.favorite!!)
+                                this@MoviesListViewModel.isLiked = response.body()?.favorite!!
+                            liveData.value = State.liked(response?.body()?.favorite!!)
                         }
-
                     })
             }
         } catch (e: Exception) {
             Log.d("mark", e.toString())
         }
         Log.d("pusk", isLiked.toString())
-
         return this.isLiked
     }
 
     sealed class State {
         object ShowLoading : State()
         object HideLoading : State()
-        data class Result(val list: List<Movie>?) : State()
+        data class Result(val totalPage: Int, val list: List<Movie>) : State()
         data class FavResult(val list: List<FavMovies>?) : State()
         data class MovieDetails(val movie: Movie?) : State()
-        data class liked(val movieLiked: Boolean):State()
+        data class liked(val movieLiked: Boolean) : State()
     }
 }

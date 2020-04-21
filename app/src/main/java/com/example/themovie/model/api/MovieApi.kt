@@ -5,6 +5,7 @@ import com.example.themovie.model.authorization.LoginData
 import com.example.themovie.model.authorization.RequestToken
 import com.example.themovie.model.Movie
 import com.example.themovie.model.MovieResponse
+import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*

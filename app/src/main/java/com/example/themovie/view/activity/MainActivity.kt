@@ -60,11 +60,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        if (fm?.backStackEntryCount!! <= 1) {
-            super.onBackPressed()
-        } else
-            fm.popBackStack()
-    }
+//    override fun onBackPressed() {
+//        if (fragment != null && fragment?.childFragmentManager?.backStackEntryCount!! > 0) {
+//            fragment?.childFragmentManager?.popBackStack();
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 
 }
