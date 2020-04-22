@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
+    //test commit
     val fm: FragmentManager? = supportFragmentManager
     var fragment: Fragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
