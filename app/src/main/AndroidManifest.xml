@@ -30,6 +30,11 @@
         <activity android:name="com.example.themovie.model.authorization.LoginActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:noHistory="true"/>
-
+        <service
+            android:name=".MovieFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 </manifest>
