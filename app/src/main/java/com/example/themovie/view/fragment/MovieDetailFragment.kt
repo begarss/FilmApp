@@ -87,6 +87,8 @@ class MovieDetailFragment : Fragment() {
         movieListViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(MoviesListViewModel::class.java)
         movieListViewModel.getMovieDetailCoroutine(movieId)
+        movieListViewModel.getState(movieId)
+
         movieListViewModel.liveData.observe(
             requireActivity(),
             androidx.lifecycle.Observer { result ->
@@ -116,7 +118,6 @@ class MovieDetailFragment : Fragment() {
                             .load(result?.movie?.getPosterPath())
                             .into(this@MovieDetailFragment.poster)
 
-                        isLiked = movieListViewModel.getState(movieId, sessionId)
                         likeBtn?.setOnClickListener(View.OnClickListener {
                             if (isLiked == false) {
                                 isLiked = true
@@ -131,13 +132,11 @@ class MovieDetailFragment : Fragment() {
                                         true,
                                         movieId,
                                         "movie"
-                                    ), sessionId
+                                    )
                                 )
-                                movie?.favorite = isLiked
                                 likeBtn?.refreshDrawableState()
                             } else {
                                 isLiked = false
-                                movie?.favorite = isLiked
 
                                 likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                                 movieListViewModel.markAsFav(
@@ -145,7 +144,7 @@ class MovieDetailFragment : Fragment() {
                                         false,
                                         movieId,
                                         "movie"
-                                    ), sessionId
+                                    )
                                 )
                                 likeBtn?.refreshDrawableState()
 

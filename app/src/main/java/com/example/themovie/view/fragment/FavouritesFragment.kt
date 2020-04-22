@@ -50,10 +50,10 @@ class FavouritesFragment : Fragment() {
         sessionId = pref.getString("sessionID", "empty")
 
         bindViews(view)
-
         swipeRefreshLayout.setOnRefreshListener {
             bindViews(view)
             movieListViewModel.getFavMovies(sessionId)
+
         }
         movieListViewModel.getFavMovies(sessionId)
         movieListViewModel.liveData.observe(

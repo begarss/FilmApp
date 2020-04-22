@@ -22,7 +22,8 @@ data class Movie(
     @SerializedName("release_date")
     val releaseDate: String? = null,
     @SerializedName("favorite")
-    var favorite: Boolean? = null,
+//    var favorite: Boolean = false,
+    var isLiked: Boolean =false,
     @ColumnInfo(name = "ListData")
     @TypeConverters(GenresConverter::class)
     val genres: List<Genre>? = null
