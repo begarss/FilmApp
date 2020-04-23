@@ -5,6 +5,7 @@ import com.example.themovie.model.authorization.LoginData
 import com.example.themovie.model.authorization.RequestToken
 import com.example.themovie.model.Movie
 import com.example.themovie.model.MovieResponse
+import com.example.themovie.model.MovieStatus
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.Response
@@ -32,13 +33,13 @@ interface MovieApi {
 
     @Headers("Content-Type:application/json; charset=UTF-8")
     @POST("account/9178480/favorite?api_key=2f0d69a585b1ec8a833e56046239144b")
-    fun addFavList(@Body movie: FavMovieInfo, @Query("session_id") session: String?): Call<FavResponse>
+    suspend fun addFavList(@Body movie: FavMovieInfo, @Query("session_id") session: String?): Response<FavResponse>
 
     @GET("account/9178480/favorite/movies?api_key=2f0d69a585b1ec8a833e56046239144b")
     fun getFavList(@Query("session_id") session: String?): Call<MovieResponse>
 
     @GET("movie/{movie_id}/account_states")
-    fun getMovieState(@Path("movie_id") id: Int, @Query("api_key") apiKey: String?, @Query("session_id") session: String?): Call<Movie>
+    suspend fun getMovieState(@Path("movie_id") id: Int, @Query("api_key") apiKey: String?, @Query("session_id") session: String?): Response<MovieStatus>
 
 
     @GET("movie/popular")

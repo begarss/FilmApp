@@ -2,7 +2,6 @@ package com.example.themovie.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,27 +9,19 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.example.themovie.BuildConfig
-import com.example.themovie.model.Fav.FavMovieInfo
-import com.example.themovie.model.Fav.FavResponse
 import com.example.themovie.R
-import com.example.themovie.model.api.MovieApi
-import com.example.themovie.model.api.RetrofitService
+import com.example.themovie.model.Fav.FavMovieInfo
 import com.example.themovie.model.Movie
-import com.example.themovie.model.MovieDao
-import com.example.themovie.model.MovieDatabase
 import com.example.themovie.view_model.MoviesListViewModel
 import com.example.themovie.view_model.ViewModelProviderFactory
-import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 
 class MovieDetailFragment : Fragment() {
@@ -71,6 +62,14 @@ class MovieDetailFragment : Fragment() {
         val v: View = LayoutInflater.from(container?.context)
             .inflate(R.layout.fragment_movie_detail, container, false)
 
+        val toolbar = v.findViewById(R.id.toolbar) as Toolbar
+        toolbar.setNavigationIcon(R.drawable.ic_back)
+        toolbar.setTitle("");
+
+        (activity as AppCompatActivity?)?.setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener(View.OnClickListener {
+            activity?.onBackPressed()
+        })
 
         bindViews(v)
         getDetails(movieId)
@@ -87,6 +86,8 @@ class MovieDetailFragment : Fragment() {
         movieListViewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(MoviesListViewModel::class.java)
         movieListViewModel.getMovieDetailCoroutine(movieId)
+        movieListViewModel.getState(movieId)
+
         movieListViewModel.liveData.observe(
             requireActivity(),
             androidx.lifecycle.Observer { result ->
@@ -116,7 +117,6 @@ class MovieDetailFragment : Fragment() {
                             .load(result?.movie?.getPosterPath())
                             .into(this@MovieDetailFragment.poster)
 
-                        isLiked = movieListViewModel.getState(movieId, sessionId)
                         likeBtn?.setOnClickListener(View.OnClickListener {
                             if (isLiked == false) {
                                 isLiked = true
@@ -131,13 +131,11 @@ class MovieDetailFragment : Fragment() {
                                         true,
                                         movieId,
                                         "movie"
-                                    ), sessionId
+                                    )
                                 )
-                                movie?.favorite = isLiked
                                 likeBtn?.refreshDrawableState()
                             } else {
                                 isLiked = false
-                                movie?.favorite = isLiked
 
                                 likeBtn?.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                                 movieListViewModel.markAsFav(
@@ -145,7 +143,7 @@ class MovieDetailFragment : Fragment() {
                                         false,
                                         movieId,
                                         "movie"
-                                    ), sessionId
+                                    )
                                 )
                                 likeBtn?.refreshDrawableState()
 
@@ -165,7 +163,7 @@ class MovieDetailFragment : Fragment() {
         poster = v.findViewById(R.id.m_avatar_detail)
         likeBtn = v.findViewById(R.id.fav_btn)
         movieYear = v.findViewById(R.id.m_movie_release_date)
-        backBtn = v.findViewById(R.id.back_btn)
+//        backBtn = v.findViewById(R.id.back_btn)
 
     }
 
