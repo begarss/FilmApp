@@ -44,17 +44,6 @@
                 android:src="@drawable/ic_share"
                 android:tint="@android:color/white" />
 
-            <ImageButton
-                android:id="@+id/fav_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginHorizontal="64dp"
-                android:layout_marginVertical="16dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="TODO"
-                android:src="@drawable/ic_favorite_border_black_24dp"
-                android:tint="@android:color/white" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -65,7 +54,20 @@
                 app:navigationIcon="@drawable/ic_back"
                 app:popupTheme="@color/colorPrimaryDark"
                 app:title=""
-                app:titleTextColor="#ffff" />
+                app:titleTextColor="#ffff">
+
+                <ImageButton
+                    android:id="@+id/fav_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginHorizontal="64dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_favorite_border_black_24dp"
+                    android:tint="@android:color/white" />
+            </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
