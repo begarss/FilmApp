@@ -2,9 +2,9 @@ package com.example.themovie.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.view.GestureDetector.SimpleOnGestureListener
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,12 +14,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.themovie.DetailScrollView
 import com.example.themovie.R
 import com.example.themovie.model.Fav.FavMovieInfo
 import com.example.themovie.model.Movie
 import com.example.themovie.view_model.MoviesListViewModel
 import com.example.themovie.view_model.ViewModelProviderFactory
-import kotlinx.android.synthetic.main.fragment_movie_detail.*
+import kotlinx.android.synthetic.main.fragment_movie_detail.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,6 +39,8 @@ class MovieDetailFragment : Fragment() {
     private var backBtn: ImageButton? = null
     var sessionId: String? = null
     private var movie: Movie? = null
+
+    private var scrollView: DetailScrollView? = null
 
     private lateinit var movieListViewModel: MoviesListViewModel
 
@@ -70,6 +73,34 @@ class MovieDetailFragment : Fragment() {
         toolbar.setNavigationOnClickListener(View.OnClickListener {
             activity?.onBackPressed()
         })
+
+        scrollView = v.findViewById(R.id.detail_scroll_view)
+        val gesture = GestureDetector(v.context,
+            object : SimpleOnGestureListener() {
+                override fun onDown(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onFling(
+                    e1: MotionEvent, e2: MotionEvent, velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+                    val SWIPE_MIN_DISTANCE = 200
+                    val SWIPE_THRESHOLD_VELOCITY = 200
+                    try {
+                        Log.e("EmpDetailFragmnt", "ongesture")
+                        if (e2.x - e1.x > SWIPE_MIN_DISTANCE
+                            && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY
+                        ) {
+                            Log.e("EmpDetailFragmnt", "Left to right")
+                            (activity as AppCompatActivity?)?.onBackPressed()
+                        }
+                    } catch (e: Exception) {
+                    }
+                    return super.onFling(e1, e2, velocityX, velocityY)
+                }
+            })
+        scrollView?.setDetector(gesture)
 
         bindViews(v)
         getDetails(movieId)
