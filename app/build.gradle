@@ -47,6 +47,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation "androidx.preference:preference:1.1.0"
+
     //adding view model
     implementation "android.arch.lifecycle:extensions:$view_model_version"
     implementation "android.arch.lifecycle:viewmodel:$view_model_version"
@@ -60,6 +62,11 @@ dependencies {
     implementation 'android.arch.persistence.room:runtime:2.2.5'
     implementation 'androidx.room:room-ktx:2.2.5'
     kapt 'android.arch.persistence.room:compiler:2.2.5'
+    //MVVM
+    def lifecycle_version = '2.2.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
 
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
 

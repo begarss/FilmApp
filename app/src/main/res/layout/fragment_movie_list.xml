@@ -38,9 +38,12 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
             android:id="@+id/main_content">
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
+            android:id="@+id/nsv"
             android:layout_height="wrap_content"
             android:fillViewport="true">
                 <LinearLayout
@@ -52,7 +55,6 @@
                             android:id="@+id/static_div"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="50dp"
                             >
 
                                 <ImageView
@@ -118,12 +120,11 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_marginTop="4dp"
-                    android:id="@+id/recycler_view"
+                    android:id="@+id/rvMovies"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
                     android:scrollbars="vertical"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     tools:listitem="@layout/movie_list_row"/>
 
                 </LinearLayout>
