@@ -18,17 +18,18 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <activity android:name=".activity.SplashActivity"
+        <activity android:name="com.example.themovie.view.activity.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"
+        <activity android:name="com.example.themovie.view.activity.MainActivity"
             android:launchMode="singleTop"/>
-        <activity android:name=".authorization.LoginActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-    </application>
+        <activity android:name="com.example.themovie.model.authorization.LoginActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:noHistory="true"/>
 
+    </application>
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.themovie.Fav
+package com.example.themovie.model.Fav
 
 data class FavResponse(
     val status_code: Int,

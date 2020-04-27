@@ -1,4 +1,4 @@
-package com.example.themovie.Fav
+package com.example.themovie.model.Fav
 
 import com.google.gson.annotations.SerializedName
 

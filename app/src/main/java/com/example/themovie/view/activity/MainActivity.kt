@@ -1,4 +1,4 @@
-package com.example.themovie.activity
+package com.example.themovie.view.activity
 
 import android.os.Bundle
 import android.util.Log
@@ -6,13 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.themovie.R
-import com.example.themovie.fragment.FavouritesFragment
-import com.example.themovie.fragment.MovieListFragment
-import com.example.themovie.fragment.UserFragment
+import com.example.themovie.view.fragment.FavouritesFragment
+import com.example.themovie.view.fragment.MovieListFragment
+import com.example.themovie.view.fragment.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
+    //test commit
     val fm: FragmentManager? = supportFragmentManager
     var fragment: Fragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,11 +61,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        if (fm?.backStackEntryCount!! <= 1) {
-            super.onBackPressed()
-        } else
-            fm.popBackStack()
-    }
+//    override fun onBackPressed() {
+//        if (fragment != null && fragment?.childFragmentManager?.backStackEntryCount!! > 0) {
+//            fragment?.childFragmentManager?.popBackStack();
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 
 }

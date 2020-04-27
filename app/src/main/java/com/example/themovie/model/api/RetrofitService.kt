@@ -1,4 +1,4 @@
-package com.example.themovie.api
+package com.example.themovie.model.api
 
 
 import retrofit2.Retrofit
