@@ -72,7 +72,7 @@ dependencies {
 
     // Recommended: Add the Firebase SDK for Google Analytics.
     implementation 'com.google.firebase:firebase-analytics:17.4.0'
-
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
     // Add the Firebase SDK for Crashlytics.
     implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
 
