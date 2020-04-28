@@ -1,4 +1,4 @@
-package com.example.themovie
+package com.example.themovie.view.adapter
 
 import android.content.Context
 import android.util.AttributeSet
