@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:text="Notification Sample App"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textColor="#1D011A"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
 
