@@ -14,13 +14,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.example.themovie.DetailScrollView
+import com.example.themovie.view.adapter.DetailScrollView
 import com.example.themovie.R
 import com.example.themovie.model.Fav.FavMovieInfo
 import com.example.themovie.model.Movie
 import com.example.themovie.view_model.MoviesListViewModel
 import com.example.themovie.view_model.ViewModelProviderFactory
-import kotlinx.android.synthetic.main.fragment_movie_detail.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 

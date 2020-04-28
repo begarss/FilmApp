@@ -10,9 +10,12 @@ import com.example.themovie.view.fragment.FavouritesFragment
 import com.example.themovie.view.fragment.MovieListFragment
 import com.example.themovie.view.fragment.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 class MainActivity : AppCompatActivity() {
+
+
     //test commit
     val fm: FragmentManager? = supportFragmentManager
     var fragment: Fragment? = null
@@ -22,6 +25,14 @@ class MainActivity : AppCompatActivity() {
 
         fragment = fm?.findFragmentById(R.id.fragment_container)
 
+        FirebaseMessaging.getInstance().subscribeToTopic("movies")
+            .addOnCompleteListener { task ->
+                var msg = "Subscribed"
+                if (!task.isSuccessful) {
+                    msg = "Not subscribed"
+                }
+                Log.d("TAGGG", msg)
+            }
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bot)
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -60,7 +71,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_home
         }
     }
-
 //    override fun onBackPressed() {
 //        if (fragment != null && fragment?.childFragmentManager?.backStackEntryCount!! > 0) {
 //            fragment?.childFragmentManager?.popBackStack();

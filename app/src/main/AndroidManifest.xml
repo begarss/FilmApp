@@ -4,32 +4,44 @@
     package="com.example.themovie">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="false"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="m"
         android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <activity android:name="com.example.themovie.view.activity.SplashActivity"
+
+        <activity
+            android:name="com.example.themovie.view.activity.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.themovie.view.activity.MainActivity"
-            android:launchMode="singleTop"/>
-        <activity android:name="com.example.themovie.model.authorization.LoginActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            android:noHistory="true"/>
-
+        <activity
+            android:name="com.example.themovie.view.activity.MainActivity"
+            android:launchMode="singleTop" />
+        <service
+            android:name=".utils.MovieFMService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <activity
+            android:name="com.example.themovie.model.authorization.LoginActivity"
+            android:noHistory="true"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
     </application>
 </manifest>
